@@ -1,0 +1,1249 @@
+25-07-21 18:11:50.005 - INFO:   name: hardi150
+  phase: train
+  gpu_ids: [0]
+  path:[
+    log: experiments/hardi150_250721_181149/logs
+    tb_logger: experiments/hardi150_250721_181149/tb_logger
+    results: experiments/hardi150_250721_181149/results
+    checkpoint: experiments/hardi150_250721_181149/checkpoint
+    resume_state: None
+    experiments_root: experiments/hardi150_250721_181149
+  ]
+  datasets:[
+    train:[
+      name: hardi
+      dataroot: /home/hpc/mfdp/mfdp118h/DDM2/data/noisy.nii.gz
+      valid_mask: [10, 160]
+      phase: train
+      padding: 3
+      val_volume_idx: 40
+      val_slice_idx: 40
+      batch_size: 32
+      in_channel: 1
+      num_workers: 0
+      use_shuffle: True
+    ]
+    val:[
+      name: hardi
+      dataroot: /home/hpc/mfdp/mfdp118h/DDM2/data/noisy.nii.gz
+      valid_mask: [10, 160]
+      phase: val
+      padding: 3
+      val_volume_idx: 40
+      val_slice_idx: 40
+      batch_size: 1
+      in_channel: 1
+      num_workers: 0
+      data_len: 3
+    ]
+  ]
+  model:[
+    which_model_G: mri
+    finetune_norm: False
+    drop_rate: 0.0
+    unet:[
+      in_channel: 1
+      out_channel: 1
+      inner_channel: 32
+      norm_groups: 32
+      channel_multiplier: [1, 2, 4, 8, 8]
+      attn_res: [16]
+      res_blocks: 2
+      dropout: 0.0
+      version: v1
+    ]
+    beta_schedule:[
+      train:[
+        schedule: rev_warmup70
+        n_timestep: 1000
+        linear_start: 5e-05
+        linear_end: 0.01
+      ]
+      val:[
+        schedule: rev_warmup70
+        n_timestep: 1000
+        linear_start: 5e-05
+        linear_end: 0.01
+      ]
+    ]
+    diffusion:[
+      image_size: 128
+      channels: 3
+      conditional: True
+    ]
+  ]
+  train:[
+    n_iter: 100000
+    val_freq: 1000.0
+    save_checkpoint_freq: 10000.0
+    print_freq: 100.0
+    optimizer:[
+      type: adam
+      lr: 0.0001
+    ]
+    ema_scheduler:[
+      step_start_ema: 5000
+      update_ema_every: 1
+      ema_decay: 0.9999
+    ]
+  ]
+  noise_model:[
+    resume_state: /home/hpc/mfdp/mfdp118h/DDM2/experiments/hardi150_noisemodel_250721_111344/checkpoint/latest
+    drop_rate: 0.0
+    unet:[
+      in_channel: 2
+      out_channel: 1
+      inner_channel: 32
+      norm_groups: 32
+      channel_multiplier: [1, 2, 4, 8, 8]
+      attn_res: [16]
+      res_blocks: 2
+      dropout: 0.0
+      version: v1
+    ]
+    beta_schedule:[
+      linear_start: 5e-05
+      linear_end: 0.01
+    ]
+    n_iter: 10000
+    val_freq: 2000.0
+    save_checkpoint_freq: 10000.0
+    print_freq: 1000.0
+    optimizer:[
+      type: adam
+      lr: 0.0001
+    ]
+  ]
+  stage2_file: /home/hpc/mfdp/mfdp118h/DDM2/state_matching.txt
+  distributed: False
+
+25-07-21 18:11:54.386 - INFO: MRI dataset [hardi] is created.
+25-07-21 18:11:56.345 - INFO: MRI dataset [hardi] is created.
+25-07-21 18:11:56.346 - INFO: Initial Dataset Finished
+25-07-21 18:11:57.418 - INFO: Initialization method [orthogonal]
+/home/hpc/mfdp/mfdp118h/DDM2/model/model.py:229: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(gen_path)
+25-07-21 18:11:59.359 - INFO: Loading stage1 pretrained model for G [/home/hpc/mfdp/mfdp118h/DDM2/experiments/hardi150_noisemodel_250721_111344/checkpoint/latest_gen.pth] ...
+25-07-21 18:11:59.384 - INFO: [DDM2] is created.
+25-07-21 18:11:59.385 - INFO: Initial Model Finished
+25-07-21 18:12:14.286 - INFO: <epoch:  1, iter:     100> l_pix: 1.0489e-01 
+25-07-21 18:12:25.382 - INFO: <epoch:  1, iter:     200> l_pix: 1.5164e-02 
+25-07-21 18:12:36.492 - INFO: <epoch:  1, iter:     300> l_pix: 1.7266e-02 
+25-07-21 18:12:48.364 - INFO: <epoch:  2, iter:     400> l_pix: 1.4276e-02 
+25-07-21 18:12:59.500 - INFO: <epoch:  2, iter:     500> l_pix: 2.3986e-02 
+25-07-21 18:13:10.653 - INFO: <epoch:  2, iter:     600> l_pix: 1.5174e-02 
+25-07-21 18:13:21.739 - INFO: <epoch:  3, iter:     700> l_pix: 1.7914e-02 
+25-07-21 18:13:32.857 - INFO: <epoch:  3, iter:     800> l_pix: 6.3992e-03 
+25-07-21 18:13:43.996 - INFO: <epoch:  3, iter:     900> l_pix: 1.8203e-02 
+25-07-21 18:13:55.073 - INFO: <epoch:  4, iter:   1,000> l_pix: 1.3701e-02 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   1%|          | 1/81 [00:00<00:26,  3.04it/s]sampling loop time step:  10%|▉         | 8/81 [00:00<00:03, 22.47it/s]sampling loop time step:  19%|█▊        | 15/81 [00:00<00:01, 35.51it/s]sampling loop time step:  27%|██▋       | 22/81 [00:00<00:01, 44.36it/s]sampling loop time step:  36%|███▌      | 29/81 [00:00<00:01, 50.50it/s]sampling loop time step:  44%|████▍     | 36/81 [00:00<00:00, 54.71it/s]sampling loop time step:  53%|█████▎    | 43/81 [00:00<00:00, 57.66it/s]sampling loop time step:  62%|██████▏   | 50/81 [00:01<00:00, 59.77it/s]sampling loop time step:  70%|███████   | 57/81 [00:01<00:00, 61.22it/s]sampling loop time step:  79%|███████▉  | 64/81 [00:01<00:00, 62.20it/s]sampling loop time step:  88%|████████▊ | 71/81 [00:01<00:00, 62.87it/s]sampling loop time step:  96%|█████████▋| 78/81 [00:01<00:00, 63.29it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 51.44it/s]
+25-07-21 18:14:07.814 - INFO: <epoch:  4, iter:   1,100> l_pix: 4.4494e-03 
+25-07-21 18:14:18.853 - INFO: <epoch:  4, iter:   1,200> l_pix: 5.6578e-03 
+25-07-21 18:14:29.795 - INFO: <epoch:  4, iter:   1,300> l_pix: 1.2731e-02 
+25-07-21 18:14:40.708 - INFO: <epoch:  5, iter:   1,400> l_pix: 6.3570e-03 
+25-07-21 18:14:51.641 - INFO: <epoch:  5, iter:   1,500> l_pix: 8.7103e-03 
+25-07-21 18:15:02.569 - INFO: <epoch:  5, iter:   1,600> l_pix: 6.7168e-03 
+25-07-21 18:15:13.540 - INFO: <epoch:  6, iter:   1,700> l_pix: 7.5420e-03 
+25-07-21 18:15:24.513 - INFO: <epoch:  6, iter:   1,800> l_pix: 6.5812e-03 
+25-07-21 18:15:35.445 - INFO: <epoch:  6, iter:   1,900> l_pix: 6.5114e-03 
+25-07-21 18:15:46.417 - INFO: <epoch:  7, iter:   2,000> l_pix: 3.6255e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.16it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.09it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.77it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.10it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.27it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.38it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.46it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.48it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.53it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.55it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.56it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.27it/s]
+25-07-21 18:15:58.893 - INFO: <epoch:  7, iter:   2,100> l_pix: 4.9728e-03 
+25-07-21 18:16:09.959 - INFO: <epoch:  7, iter:   2,200> l_pix: 7.2997e-03 
+25-07-21 18:16:20.976 - INFO: <epoch:  7, iter:   2,300> l_pix: 5.5423e-03 
+25-07-21 18:16:32.014 - INFO: <epoch:  8, iter:   2,400> l_pix: 9.8478e-03 
+25-07-21 18:16:43.148 - INFO: <epoch:  8, iter:   2,500> l_pix: 7.4118e-03 
+25-07-21 18:16:54.233 - INFO: <epoch:  8, iter:   2,600> l_pix: 3.8040e-03 
+25-07-21 18:17:05.266 - INFO: <epoch:  9, iter:   2,700> l_pix: 6.3418e-03 
+25-07-21 18:17:16.305 - INFO: <epoch:  9, iter:   2,800> l_pix: 5.2816e-03 
+25-07-21 18:17:27.379 - INFO: <epoch:  9, iter:   2,900> l_pix: 5.0132e-03 
+25-07-21 18:17:38.418 - INFO: <epoch: 10, iter:   3,000> l_pix: 3.9484e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.25it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.00it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.58it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.93it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.13it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.25it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.27it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.31it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.36it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.42it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.41it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.12it/s]
+25-07-21 18:17:50.926 - INFO: <epoch: 10, iter:   3,100> l_pix: 8.2396e-03 
+25-07-21 18:18:01.988 - INFO: <epoch: 10, iter:   3,200> l_pix: 8.9568e-03 
+25-07-21 18:18:13.056 - INFO: <epoch: 10, iter:   3,300> l_pix: 5.1235e-03 
+25-07-21 18:18:24.109 - INFO: <epoch: 11, iter:   3,400> l_pix: 7.6527e-03 
+25-07-21 18:18:35.174 - INFO: <epoch: 11, iter:   3,500> l_pix: 3.9557e-03 
+25-07-21 18:18:46.250 - INFO: <epoch: 11, iter:   3,600> l_pix: 9.2982e-03 
+25-07-21 18:18:57.322 - INFO: <epoch: 12, iter:   3,700> l_pix: 5.4134e-03 
+25-07-21 18:19:08.479 - INFO: <epoch: 12, iter:   3,800> l_pix: 9.1901e-03 
+25-07-21 18:19:19.537 - INFO: <epoch: 12, iter:   3,900> l_pix: 6.7729e-03 
+25-07-21 18:19:30.547 - INFO: <epoch: 13, iter:   4,000> l_pix: 1.2951e-02 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.60it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.38it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.25it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.34it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 63.40it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 63.65it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 63.78it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 63.81it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 63.84it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 63.84it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.00it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 63.64it/s]
+25-07-21 18:19:42.782 - INFO: <epoch: 13, iter:   4,100> l_pix: 4.0275e-03 
+25-07-21 18:19:53.598 - INFO: <epoch: 13, iter:   4,200> l_pix: 5.2465e-03 
+25-07-21 18:20:04.412 - INFO: <epoch: 13, iter:   4,300> l_pix: 5.9811e-03 
+25-07-21 18:20:15.330 - INFO: <epoch: 14, iter:   4,400> l_pix: 7.3080e-03 
+25-07-21 18:20:26.369 - INFO: <epoch: 14, iter:   4,500> l_pix: 6.3456e-03 
+25-07-21 18:20:37.414 - INFO: <epoch: 14, iter:   4,600> l_pix: 4.8591e-03 
+25-07-21 18:20:48.419 - INFO: <epoch: 15, iter:   4,700> l_pix: 1.0228e-02 
+25-07-21 18:20:59.423 - INFO: <epoch: 15, iter:   4,800> l_pix: 9.1112e-03 
+25-07-21 18:21:10.506 - INFO: <epoch: 15, iter:   4,900> l_pix: 5.9389e-03 
+25-07-21 18:21:21.522 - INFO: <epoch: 16, iter:   5,000> l_pix: 7.0611e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.73it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.15it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 62.68it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.29it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 63.67it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 63.84it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 63.89it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.03it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.04it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.08it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.02it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 63.64it/s]
+25-07-21 18:21:34.113 - INFO: <epoch: 16, iter:   5,100> l_pix: 4.1196e-03 
+25-07-21 18:21:45.192 - INFO: <epoch: 16, iter:   5,200> l_pix: 5.1381e-03 
+25-07-21 18:21:56.287 - INFO: <epoch: 16, iter:   5,300> l_pix: 4.0825e-03 
+25-07-21 18:22:07.337 - INFO: <epoch: 17, iter:   5,400> l_pix: 5.7862e-03 
+25-07-21 18:22:18.502 - INFO: <epoch: 17, iter:   5,500> l_pix: 9.4932e-03 
+25-07-21 18:22:29.554 - INFO: <epoch: 17, iter:   5,600> l_pix: 1.0318e-02 
+25-07-21 18:22:40.596 - INFO: <epoch: 18, iter:   5,700> l_pix: 3.6614e-03 
+25-07-21 18:22:51.666 - INFO: <epoch: 18, iter:   5,800> l_pix: 8.5016e-03 
+25-07-21 18:23:02.742 - INFO: <epoch: 18, iter:   5,900> l_pix: 5.8070e-03 
+25-07-21 18:23:13.765 - INFO: <epoch: 19, iter:   6,000> l_pix: 1.0339e-02 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   7%|▋         | 6/81 [00:00<00:01, 59.99it/s]sampling loop time step:  16%|█▌        | 13/81 [00:00<00:01, 62.49it/s]sampling loop time step:  25%|██▍       | 20/81 [00:00<00:00, 63.33it/s]sampling loop time step:  33%|███▎      | 27/81 [00:00<00:00, 63.66it/s]sampling loop time step:  42%|████▏     | 34/81 [00:00<00:00, 63.82it/s]sampling loop time step:  51%|█████     | 41/81 [00:00<00:00, 63.88it/s]sampling loop time step:  59%|█████▉    | 48/81 [00:00<00:00, 63.96it/s]sampling loop time step:  68%|██████▊   | 55/81 [00:00<00:00, 64.08it/s]sampling loop time step:  77%|███████▋  | 62/81 [00:00<00:00, 64.20it/s]sampling loop time step:  85%|████████▌ | 69/81 [00:01<00:00, 64.18it/s]sampling loop time step:  94%|█████████▍| 76/81 [00:01<00:00, 64.21it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 63.87it/s]
+25-07-21 18:23:26.019 - INFO: <epoch: 19, iter:   6,100> l_pix: 4.7228e-03 
+25-07-21 18:23:36.824 - INFO: <epoch: 19, iter:   6,200> l_pix: 1.0289e-02 
+25-07-21 18:23:47.648 - INFO: <epoch: 19, iter:   6,300> l_pix: 4.3973e-03 
+25-07-21 18:23:58.645 - INFO: <epoch: 20, iter:   6,400> l_pix: 5.5386e-03 
+25-07-21 18:24:09.714 - INFO: <epoch: 20, iter:   6,500> l_pix: 5.3988e-03 
+25-07-21 18:24:20.746 - INFO: <epoch: 20, iter:   6,600> l_pix: 8.0338e-03 
+25-07-21 18:24:31.764 - INFO: <epoch: 21, iter:   6,700> l_pix: 1.4333e-02 
+25-07-21 18:24:42.815 - INFO: <epoch: 21, iter:   6,800> l_pix: 7.4325e-03 
+25-07-21 18:24:53.875 - INFO: <epoch: 21, iter:   6,900> l_pix: 9.5250e-03 
+25-07-21 18:25:04.944 - INFO: <epoch: 22, iter:   7,000> l_pix: 6.5762e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.89it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.82it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.57it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.99it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.25it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.41it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.48it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.53it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.56it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.57it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.57it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.24it/s]
+25-07-21 18:25:17.492 - INFO: <epoch: 22, iter:   7,100> l_pix: 6.2597e-03 
+25-07-21 18:25:28.570 - INFO: <epoch: 22, iter:   7,200> l_pix: 4.5111e-03 
+25-07-21 18:25:39.650 - INFO: <epoch: 22, iter:   7,300> l_pix: 3.5514e-03 
+25-07-21 18:25:50.693 - INFO: <epoch: 23, iter:   7,400> l_pix: 3.9483e-03 
+25-07-21 18:26:01.758 - INFO: <epoch: 23, iter:   7,500> l_pix: 8.9664e-03 
+25-07-21 18:26:12.830 - INFO: <epoch: 23, iter:   7,600> l_pix: 2.7773e-03 
+25-07-21 18:26:23.927 - INFO: <epoch: 24, iter:   7,700> l_pix: 4.3657e-03 
+25-07-21 18:26:35.028 - INFO: <epoch: 24, iter:   7,800> l_pix: 3.2754e-03 
+25-07-21 18:26:46.078 - INFO: <epoch: 24, iter:   7,900> l_pix: 1.0675e-02 
+25-07-21 18:26:57.107 - INFO: <epoch: 25, iter:   8,000> l_pix: 8.7386e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.99it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.87it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.57it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.88it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.10it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.23it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.28it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.30it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.30it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.23it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.15it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.00it/s]
+25-07-21 18:27:09.391 - INFO: <epoch: 25, iter:   8,100> l_pix: 5.9441e-03 
+25-07-21 18:27:20.253 - INFO: <epoch: 25, iter:   8,200> l_pix: 7.6159e-03 
+25-07-21 18:27:31.075 - INFO: <epoch: 25, iter:   8,300> l_pix: 5.0010e-03 
+25-07-21 18:27:41.870 - INFO: <epoch: 26, iter:   8,400> l_pix: 8.6636e-03 
+25-07-21 18:27:52.703 - INFO: <epoch: 26, iter:   8,500> l_pix: 6.2419e-03 
+25-07-21 18:28:03.525 - INFO: <epoch: 26, iter:   8,600> l_pix: 5.9156e-03 
+25-07-21 18:28:14.308 - INFO: <epoch: 27, iter:   8,700> l_pix: 6.9800e-03 
+25-07-21 18:28:25.130 - INFO: <epoch: 27, iter:   8,800> l_pix: 6.5152e-03 
+25-07-21 18:28:35.946 - INFO: <epoch: 27, iter:   8,900> l_pix: 6.9111e-03 
+25-07-21 18:28:46.803 - INFO: <epoch: 28, iter:   9,000> l_pix: 3.7806e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.66it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.27it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 62.98it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.36it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 63.74it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 63.80it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 63.80it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 63.75it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 63.87it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 63.68it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 63.63it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 63.52it/s]
+25-07-21 18:28:59.297 - INFO: <epoch: 28, iter:   9,100> l_pix: 6.6184e-03 
+25-07-21 18:29:10.419 - INFO: <epoch: 28, iter:   9,200> l_pix: 6.5426e-03 
+25-07-21 18:29:21.475 - INFO: <epoch: 28, iter:   9,300> l_pix: 3.3065e-03 
+25-07-21 18:29:32.534 - INFO: <epoch: 29, iter:   9,400> l_pix: 3.2104e-03 
+25-07-21 18:29:43.612 - INFO: <epoch: 29, iter:   9,500> l_pix: 9.6429e-03 
+25-07-21 18:29:54.708 - INFO: <epoch: 29, iter:   9,600> l_pix: 7.1963e-03 
+25-07-21 18:30:05.781 - INFO: <epoch: 30, iter:   9,700> l_pix: 4.9231e-03 
+25-07-21 18:30:16.887 - INFO: <epoch: 30, iter:   9,800> l_pix: 8.2948e-03 
+25-07-21 18:30:27.953 - INFO: <epoch: 30, iter:   9,900> l_pix: 6.3567e-03 
+25-07-21 18:30:39.035 - INFO: <epoch: 31, iter:  10,000> l_pix: 4.1893e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.76it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.68it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.47it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.71it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 63.69it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 63.82it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.02it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.08it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.13it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 63.86it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 63.91it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 63.75it/s]
+25-07-21 18:30:40.498 - INFO: Saving models and training states.
+25-07-21 18:30:42.083 - INFO: Saved model in [experiments/hardi150_250721_181149/checkpoint/latest_gen.pth] ...
+25-07-21 18:30:53.027 - INFO: <epoch: 31, iter:  10,100> l_pix: 6.7682e-03 
+25-07-21 18:31:03.848 - INFO: <epoch: 31, iter:  10,200> l_pix: 3.1547e-03 
+25-07-21 18:31:14.711 - INFO: <epoch: 31, iter:  10,300> l_pix: 5.8634e-03 
+25-07-21 18:31:25.552 - INFO: <epoch: 32, iter:  10,400> l_pix: 3.5375e-03 
+25-07-21 18:31:36.364 - INFO: <epoch: 32, iter:  10,500> l_pix: 3.1111e-03 
+25-07-21 18:31:47.177 - INFO: <epoch: 32, iter:  10,600> l_pix: 3.4037e-03 
+25-07-21 18:31:57.967 - INFO: <epoch: 33, iter:  10,700> l_pix: 5.9642e-03 
+25-07-21 18:32:08.790 - INFO: <epoch: 33, iter:  10,800> l_pix: 5.4026e-03 
+25-07-21 18:32:19.616 - INFO: <epoch: 33, iter:  10,900> l_pix: 6.2708e-03 
+25-07-21 18:32:30.399 - INFO: <epoch: 34, iter:  11,000> l_pix: 4.2381e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.77it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.72it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.34it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.54it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 63.78it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 63.52it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 63.66it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 63.74it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 63.84it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 63.77it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 63.78it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 63.56it/s]
+25-07-21 18:32:42.647 - INFO: <epoch: 34, iter:  11,100> l_pix: 4.0978e-03 
+25-07-21 18:32:53.473 - INFO: <epoch: 34, iter:  11,200> l_pix: 3.2239e-03 
+25-07-21 18:33:04.298 - INFO: <epoch: 34, iter:  11,300> l_pix: 7.0636e-03 
+25-07-21 18:33:15.088 - INFO: <epoch: 35, iter:  11,400> l_pix: 5.6680e-03 
+25-07-21 18:33:25.996 - INFO: <epoch: 35, iter:  11,500> l_pix: 4.2107e-03 
+25-07-21 18:33:36.819 - INFO: <epoch: 35, iter:  11,600> l_pix: 4.2568e-03 
+25-07-21 18:33:47.606 - INFO: <epoch: 36, iter:  11,700> l_pix: 2.9850e-03 
+25-07-21 18:33:58.426 - INFO: <epoch: 36, iter:  11,800> l_pix: 9.0323e-03 
+25-07-21 18:34:09.273 - INFO: <epoch: 36, iter:  11,900> l_pix: 5.1089e-03 
+25-07-21 18:34:20.048 - INFO: <epoch: 37, iter:  12,000> l_pix: 3.3878e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.56it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.26it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.13it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.58it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 63.76it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 63.95it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.03it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.14it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.19it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.24it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.22it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 63.84it/s]
+25-07-21 18:34:32.300 - INFO: <epoch: 37, iter:  12,100> l_pix: 5.5695e-03 
+25-07-21 18:34:43.123 - INFO: <epoch: 37, iter:  12,200> l_pix: 3.4621e-03 
+25-07-21 18:34:53.936 - INFO: <epoch: 37, iter:  12,300> l_pix: 3.9999e-03 
+25-07-21 18:35:04.717 - INFO: <epoch: 38, iter:  12,400> l_pix: 5.9738e-03 
+25-07-21 18:35:15.537 - INFO: <epoch: 38, iter:  12,500> l_pix: 3.3163e-03 
+25-07-21 18:35:26.357 - INFO: <epoch: 38, iter:  12,600> l_pix: 4.7683e-03 
+25-07-21 18:35:37.141 - INFO: <epoch: 39, iter:  12,700> l_pix: 4.4684e-03 
+25-07-21 18:35:48.036 - INFO: <epoch: 39, iter:  12,800> l_pix: 4.5170e-03 
+25-07-21 18:35:58.848 - INFO: <epoch: 39, iter:  12,900> l_pix: 2.6675e-03 
+25-07-21 18:36:09.624 - INFO: <epoch: 40, iter:  13,000> l_pix: 3.7619e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.99it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.02it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.68it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.85it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 63.97it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.24it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.36it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.37it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.33it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.15it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.24it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.04it/s]
+25-07-21 18:36:21.868 - INFO: <epoch: 40, iter:  13,100> l_pix: 5.7664e-03 
+25-07-21 18:36:32.683 - INFO: <epoch: 40, iter:  13,200> l_pix: 4.8494e-03 
+25-07-21 18:36:43.497 - INFO: <epoch: 40, iter:  13,300> l_pix: 8.3289e-03 
+25-07-21 18:36:54.280 - INFO: <epoch: 41, iter:  13,400> l_pix: 3.1071e-03 
+25-07-21 18:37:05.096 - INFO: <epoch: 41, iter:  13,500> l_pix: 7.2339e-03 
+25-07-21 18:37:15.912 - INFO: <epoch: 41, iter:  13,600> l_pix: 4.3596e-03 
+25-07-21 18:37:26.699 - INFO: <epoch: 42, iter:  13,700> l_pix: 4.1489e-03 
+25-07-21 18:37:37.519 - INFO: <epoch: 42, iter:  13,800> l_pix: 4.2967e-03 
+25-07-21 18:37:48.343 - INFO: <epoch: 42, iter:  13,900> l_pix: 7.7395e-03 
+25-07-21 18:37:59.136 - INFO: <epoch: 43, iter:  14,000> l_pix: 4.7955e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.71it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.82it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.52it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.79it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.02it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.18it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.31it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.36it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.32it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.39it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.40it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.07it/s]
+25-07-21 18:38:11.514 - INFO: <epoch: 43, iter:  14,100> l_pix: 2.7690e-03 
+25-07-21 18:38:22.327 - INFO: <epoch: 43, iter:  14,200> l_pix: 3.3852e-03 
+25-07-21 18:38:33.146 - INFO: <epoch: 43, iter:  14,300> l_pix: 3.4425e-03 
+25-07-21 18:38:43.929 - INFO: <epoch: 44, iter:  14,400> l_pix: 4.9629e-03 
+25-07-21 18:38:54.791 - INFO: <epoch: 44, iter:  14,500> l_pix: 6.8301e-03 
+25-07-21 18:39:05.608 - INFO: <epoch: 44, iter:  14,600> l_pix: 4.2116e-03 
+25-07-21 18:39:16.375 - INFO: <epoch: 45, iter:  14,700> l_pix: 6.2653e-03 
+25-07-21 18:39:27.174 - INFO: <epoch: 45, iter:  14,800> l_pix: 4.4558e-03 
+25-07-21 18:39:37.990 - INFO: <epoch: 45, iter:  14,900> l_pix: 1.0970e-02 
+25-07-21 18:39:48.761 - INFO: <epoch: 46, iter:  15,000> l_pix: 1.3169e-02 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.61it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.51it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.25it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.60it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 63.87it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.04it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.14it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.19it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.24it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.22it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.33it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 63.91it/s]
+25-07-21 18:40:01.038 - INFO: <epoch: 46, iter:  15,100> l_pix: 2.7293e-03 
+25-07-21 18:40:11.859 - INFO: <epoch: 46, iter:  15,200> l_pix: 3.1557e-03 
+25-07-21 18:40:22.684 - INFO: <epoch: 46, iter:  15,300> l_pix: 5.7222e-03 
+25-07-21 18:40:33.576 - INFO: <epoch: 47, iter:  15,400> l_pix: 3.2786e-03 
+25-07-21 18:40:44.414 - INFO: <epoch: 47, iter:  15,500> l_pix: 3.2514e-03 
+25-07-21 18:40:55.244 - INFO: <epoch: 47, iter:  15,600> l_pix: 3.8748e-03 
+25-07-21 18:41:06.054 - INFO: <epoch: 48, iter:  15,700> l_pix: 6.5242e-03 
+25-07-21 18:41:16.876 - INFO: <epoch: 48, iter:  15,800> l_pix: 3.0364e-03 
+25-07-21 18:41:27.699 - INFO: <epoch: 48, iter:  15,900> l_pix: 3.6116e-03 
+25-07-21 18:41:38.495 - INFO: <epoch: 49, iter:  16,000> l_pix: 4.7758e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.20it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.25it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.91it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.27it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.50it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.59it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.64it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.63it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.67it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.70it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.74it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.44it/s]
+25-07-21 18:41:50.714 - INFO: <epoch: 49, iter:  16,100> l_pix: 3.0297e-03 
+25-07-21 18:42:01.512 - INFO: <epoch: 49, iter:  16,200> l_pix: 3.4989e-03 
+25-07-21 18:42:12.324 - INFO: <epoch: 49, iter:  16,300> l_pix: 5.3659e-03 
+25-07-21 18:42:23.102 - INFO: <epoch: 50, iter:  16,400> l_pix: 4.1404e-03 
+25-07-21 18:42:33.918 - INFO: <epoch: 50, iter:  16,500> l_pix: 3.5456e-03 
+25-07-21 18:42:44.738 - INFO: <epoch: 50, iter:  16,600> l_pix: 4.1639e-03 
+25-07-21 18:42:55.648 - INFO: <epoch: 51, iter:  16,700> l_pix: 6.8181e-03 
+25-07-21 18:43:06.464 - INFO: <epoch: 51, iter:  16,800> l_pix: 3.2056e-03 
+25-07-21 18:43:17.270 - INFO: <epoch: 51, iter:  16,900> l_pix: 3.1168e-03 
+25-07-21 18:43:28.041 - INFO: <epoch: 52, iter:  17,000> l_pix: 5.7979e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.25it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.95it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.54it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.87it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.07it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.14it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.20it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.26it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.31it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.31it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.30it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.04it/s]
+25-07-21 18:43:40.267 - INFO: <epoch: 52, iter:  17,100> l_pix: 4.3223e-03 
+25-07-21 18:43:51.080 - INFO: <epoch: 52, iter:  17,200> l_pix: 2.9464e-03 
+25-07-21 18:44:01.936 - INFO: <epoch: 52, iter:  17,300> l_pix: 3.6014e-03 
+25-07-21 18:44:12.712 - INFO: <epoch: 53, iter:  17,400> l_pix: 4.2609e-03 
+25-07-21 18:44:23.528 - INFO: <epoch: 53, iter:  17,500> l_pix: 2.4944e-03 
+25-07-21 18:44:34.336 - INFO: <epoch: 53, iter:  17,600> l_pix: 3.6347e-03 
+25-07-21 18:44:45.107 - INFO: <epoch: 54, iter:  17,700> l_pix: 2.9507e-03 
+25-07-21 18:44:55.934 - INFO: <epoch: 54, iter:  17,800> l_pix: 3.4083e-03 
+25-07-21 18:45:06.753 - INFO: <epoch: 54, iter:  17,900> l_pix: 3.4570e-03 
+25-07-21 18:45:17.609 - INFO: <epoch: 55, iter:  18,000> l_pix: 3.8890e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   7%|▋         | 6/81 [00:00<00:01, 59.97it/s]sampling loop time step:  16%|█▌        | 13/81 [00:00<00:01, 62.68it/s]sampling loop time step:  25%|██▍       | 20/81 [00:00<00:00, 63.60it/s]sampling loop time step:  33%|███▎      | 27/81 [00:00<00:00, 64.02it/s]sampling loop time step:  42%|████▏     | 34/81 [00:00<00:00, 64.20it/s]sampling loop time step:  51%|█████     | 41/81 [00:00<00:00, 64.35it/s]sampling loop time step:  59%|█████▉    | 48/81 [00:00<00:00, 64.46it/s]sampling loop time step:  68%|██████▊   | 55/81 [00:00<00:00, 64.51it/s]sampling loop time step:  77%|███████▋  | 62/81 [00:00<00:00, 64.57it/s]sampling loop time step:  85%|████████▌ | 69/81 [00:01<00:00, 64.49it/s]sampling loop time step:  94%|█████████▍| 76/81 [00:01<00:00, 64.56it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.22it/s]
+25-07-21 18:45:29.855 - INFO: <epoch: 55, iter:  18,100> l_pix: 4.1030e-03 
+25-07-21 18:45:40.679 - INFO: <epoch: 55, iter:  18,200> l_pix: 9.8971e-03 
+25-07-21 18:45:51.496 - INFO: <epoch: 55, iter:  18,300> l_pix: 4.3614e-03 
+25-07-21 18:46:02.274 - INFO: <epoch: 56, iter:  18,400> l_pix: 2.8393e-03 
+25-07-21 18:46:13.282 - INFO: <epoch: 56, iter:  18,500> l_pix: 2.8334e-03 
+25-07-21 18:46:24.225 - INFO: <epoch: 56, iter:  18,600> l_pix: 7.0859e-03 
+25-07-21 18:46:35.007 - INFO: <epoch: 57, iter:  18,700> l_pix: 3.2616e-03 
+25-07-21 18:46:45.835 - INFO: <epoch: 57, iter:  18,800> l_pix: 4.3802e-03 
+25-07-21 18:46:56.694 - INFO: <epoch: 57, iter:  18,900> l_pix: 3.2288e-03 
+25-07-21 18:47:07.464 - INFO: <epoch: 58, iter:  19,000> l_pix: 3.8294e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   7%|▋         | 6/81 [00:00<00:01, 59.63it/s]sampling loop time step:  16%|█▌        | 13/81 [00:00<00:01, 62.63it/s]sampling loop time step:  25%|██▍       | 20/81 [00:00<00:00, 63.31it/s]sampling loop time step:  33%|███▎      | 27/81 [00:00<00:00, 63.74it/s]sampling loop time step:  42%|████▏     | 34/81 [00:00<00:00, 64.06it/s]sampling loop time step:  51%|█████     | 41/81 [00:00<00:00, 64.01it/s]sampling loop time step:  59%|█████▉    | 48/81 [00:00<00:00, 64.26it/s]sampling loop time step:  68%|██████▊   | 55/81 [00:00<00:00, 64.25it/s]sampling loop time step:  77%|███████▋  | 62/81 [00:00<00:00, 64.23it/s]sampling loop time step:  85%|████████▌ | 69/81 [00:01<00:00, 64.41it/s]sampling loop time step:  94%|█████████▍| 76/81 [00:01<00:00, 64.44it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.03it/s]
+25-07-21 18:47:19.696 - INFO: <epoch: 58, iter:  19,100> l_pix: 3.8255e-03 
+25-07-21 18:47:30.534 - INFO: <epoch: 58, iter:  19,200> l_pix: 3.0993e-03 
+25-07-21 18:47:41.456 - INFO: <epoch: 58, iter:  19,300> l_pix: 3.8806e-03 
+25-07-21 18:47:52.262 - INFO: <epoch: 59, iter:  19,400> l_pix: 3.3846e-03 
+25-07-21 18:48:03.109 - INFO: <epoch: 59, iter:  19,500> l_pix: 6.6955e-03 
+25-07-21 18:48:13.943 - INFO: <epoch: 59, iter:  19,600> l_pix: 3.8019e-03 
+25-07-21 18:48:24.751 - INFO: <epoch: 60, iter:  19,700> l_pix: 5.0413e-03 
+25-07-21 18:48:35.593 - INFO: <epoch: 60, iter:  19,800> l_pix: 6.7961e-03 
+25-07-21 18:48:46.436 - INFO: <epoch: 60, iter:  19,900> l_pix: 3.8841e-03 
+25-07-21 18:48:57.244 - INFO: <epoch: 61, iter:  20,000> l_pix: 6.9463e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.86it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.80it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.47it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.84it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.03it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.14it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.29it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.43it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.36it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.42it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.40it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.07it/s]
+25-07-21 18:48:58.662 - INFO: Saving models and training states.
+25-07-21 18:48:59.578 - INFO: Saved model in [experiments/hardi150_250721_181149/checkpoint/latest_gen.pth] ...
+25-07-21 18:49:10.432 - INFO: <epoch: 61, iter:  20,100> l_pix: 3.7516e-03 
+25-07-21 18:49:21.271 - INFO: <epoch: 61, iter:  20,200> l_pix: 5.1729e-03 
+25-07-21 18:49:32.116 - INFO: <epoch: 61, iter:  20,300> l_pix: 3.0220e-03 
+25-07-21 18:49:42.927 - INFO: <epoch: 62, iter:  20,400> l_pix: 6.7024e-03 
+25-07-21 18:49:53.856 - INFO: <epoch: 62, iter:  20,500> l_pix: 6.3729e-03 
+25-07-21 18:50:04.707 - INFO: <epoch: 62, iter:  20,600> l_pix: 2.6022e-03 
+25-07-21 18:50:15.690 - INFO: <epoch: 63, iter:  20,700> l_pix: 3.9752e-03 
+25-07-21 18:50:26.534 - INFO: <epoch: 63, iter:  20,800> l_pix: 7.5761e-03 
+25-07-21 18:50:37.372 - INFO: <epoch: 63, iter:  20,900> l_pix: 3.4614e-03 
+25-07-21 18:50:48.180 - INFO: <epoch: 64, iter:  21,000> l_pix: 8.6363e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.40it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.40it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 64.15it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.48it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.65it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.76it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.83it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.84it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.85it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.89it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.88it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.61it/s]
+25-07-21 18:51:00.525 - INFO: <epoch: 64, iter:  21,100> l_pix: 4.9443e-03 
+25-07-21 18:51:11.367 - INFO: <epoch: 64, iter:  21,200> l_pix: 5.3235e-03 
+25-07-21 18:51:22.208 - INFO: <epoch: 64, iter:  21,300> l_pix: 3.8582e-03 
+25-07-21 18:51:33.014 - INFO: <epoch: 65, iter:  21,400> l_pix: 6.6814e-03 
+25-07-21 18:51:43.850 - INFO: <epoch: 65, iter:  21,500> l_pix: 5.0771e-03 
+25-07-21 18:51:54.686 - INFO: <epoch: 65, iter:  21,600> l_pix: 3.0052e-03 
+25-07-21 18:52:05.492 - INFO: <epoch: 66, iter:  21,700> l_pix: 3.5178e-03 
+25-07-21 18:52:16.467 - INFO: <epoch: 66, iter:  21,800> l_pix: 2.5981e-03 
+25-07-21 18:52:27.314 - INFO: <epoch: 66, iter:  21,900> l_pix: 3.3599e-03 
+25-07-21 18:52:38.121 - INFO: <epoch: 67, iter:  22,000> l_pix: 2.8149e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.07it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.00it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.68it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.09it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.32it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.46it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.57it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.63it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.64it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.68it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.68it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.35it/s]
+25-07-21 18:52:50.407 - INFO: <epoch: 67, iter:  22,100> l_pix: 4.2155e-03 
+25-07-21 18:53:01.252 - INFO: <epoch: 67, iter:  22,200> l_pix: 4.2171e-03 
+25-07-21 18:53:12.093 - INFO: <epoch: 67, iter:  22,300> l_pix: 2.5348e-03 
+25-07-21 18:53:22.903 - INFO: <epoch: 68, iter:  22,400> l_pix: 7.0197e-03 
+25-07-21 18:53:33.753 - INFO: <epoch: 68, iter:  22,500> l_pix: 4.8556e-03 
+25-07-21 18:53:44.635 - INFO: <epoch: 68, iter:  22,600> l_pix: 2.6843e-03 
+25-07-21 18:53:55.443 - INFO: <epoch: 69, iter:  22,700> l_pix: 2.5413e-03 
+25-07-21 18:54:06.295 - INFO: <epoch: 69, iter:  22,800> l_pix: 5.7644e-03 
+25-07-21 18:54:17.139 - INFO: <epoch: 69, iter:  22,900> l_pix: 2.5381e-03 
+25-07-21 18:54:27.946 - INFO: <epoch: 70, iter:  23,000> l_pix: 4.7748e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.50it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.38it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 64.06it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.37it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.55it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.66it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.73it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.79it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.81it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.79it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.81it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.54it/s]
+25-07-21 18:54:40.290 - INFO: <epoch: 70, iter:  23,100> l_pix: 3.5049e-03 
+25-07-21 18:54:51.204 - INFO: <epoch: 70, iter:  23,200> l_pix: 3.2402e-03 
+25-07-21 18:55:02.090 - INFO: <epoch: 70, iter:  23,300> l_pix: 2.7199e-03 
+25-07-21 18:55:12.891 - INFO: <epoch: 71, iter:  23,400> l_pix: 5.8284e-03 
+25-07-21 18:55:23.734 - INFO: <epoch: 71, iter:  23,500> l_pix: 3.5828e-03 
+25-07-21 18:55:34.576 - INFO: <epoch: 71, iter:  23,600> l_pix: 3.4378e-03 
+25-07-21 18:55:45.377 - INFO: <epoch: 72, iter:  23,700> l_pix: 6.9105e-03 
+25-07-21 18:55:56.220 - INFO: <epoch: 72, iter:  23,800> l_pix: 3.0565e-03 
+25-07-21 18:56:07.059 - INFO: <epoch: 72, iter:  23,900> l_pix: 4.3435e-03 
+25-07-21 18:56:17.868 - INFO: <epoch: 73, iter:  24,000> l_pix: 3.2579e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.36it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.15it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.76it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.12it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.31it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.40it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.50it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.53it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.49it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.45it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.34it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.20it/s]
+25-07-21 18:56:30.146 - INFO: <epoch: 73, iter:  24,100> l_pix: 3.2212e-03 
+25-07-21 18:56:40.990 - INFO: <epoch: 73, iter:  24,200> l_pix: 2.9466e-03 
+25-07-21 18:56:51.839 - INFO: <epoch: 73, iter:  24,300> l_pix: 1.1047e-02 
+25-07-21 18:57:02.654 - INFO: <epoch: 74, iter:  24,400> l_pix: 3.7374e-03 
+25-07-21 18:57:13.593 - INFO: <epoch: 74, iter:  24,500> l_pix: 3.4671e-03 
+25-07-21 18:57:24.442 - INFO: <epoch: 74, iter:  24,600> l_pix: 8.3874e-03 
+25-07-21 18:57:35.256 - INFO: <epoch: 75, iter:  24,700> l_pix: 2.4770e-03 
+25-07-21 18:57:46.101 - INFO: <epoch: 75, iter:  24,800> l_pix: 2.7694e-03 
+25-07-21 18:57:56.948 - INFO: <epoch: 75, iter:  24,900> l_pix: 3.2858e-03 
+25-07-21 18:58:07.761 - INFO: <epoch: 76, iter:  25,000> l_pix: 3.1053e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.20it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.29it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.97it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.30it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.51it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.61it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.66it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.72it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.74it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.78it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.79it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.47it/s]
+25-07-21 18:58:20.012 - INFO: <epoch: 76, iter:  25,100> l_pix: 2.8182e-03 
+25-07-21 18:58:30.852 - INFO: <epoch: 76, iter:  25,200> l_pix: 3.0044e-03 
+25-07-21 18:58:41.691 - INFO: <epoch: 76, iter:  25,300> l_pix: 2.8068e-03 
+25-07-21 18:58:52.486 - INFO: <epoch: 77, iter:  25,400> l_pix: 3.2150e-03 
+25-07-21 18:59:03.320 - INFO: <epoch: 77, iter:  25,500> l_pix: 2.7156e-03 
+25-07-21 18:59:14.156 - INFO: <epoch: 77, iter:  25,600> l_pix: 4.0547e-03 
+25-07-21 18:59:24.954 - INFO: <epoch: 78, iter:  25,700> l_pix: 3.0641e-03 
+25-07-21 18:59:35.875 - INFO: <epoch: 78, iter:  25,800> l_pix: 8.5455e-03 
+25-07-21 18:59:46.764 - INFO: <epoch: 78, iter:  25,900> l_pix: 2.9014e-03 
+25-07-21 18:59:57.570 - INFO: <epoch: 79, iter:  26,000> l_pix: 3.1684e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.11it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.02it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.62it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.90it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.04it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.09it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.19it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.23it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.21it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.20it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.20it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 63.98it/s]
+25-07-21 19:00:09.847 - INFO: <epoch: 79, iter:  26,100> l_pix: 4.5343e-03 
+25-07-21 19:00:20.692 - INFO: <epoch: 79, iter:  26,200> l_pix: 2.1992e-03 
+25-07-21 19:00:31.533 - INFO: <epoch: 79, iter:  26,300> l_pix: 3.4845e-03 
+25-07-21 19:00:42.339 - INFO: <epoch: 80, iter:  26,400> l_pix: 2.6221e-03 
+25-07-21 19:00:53.181 - INFO: <epoch: 80, iter:  26,500> l_pix: 6.0778e-03 
+25-07-21 19:01:04.029 - INFO: <epoch: 80, iter:  26,600> l_pix: 2.6791e-03 
+25-07-21 19:01:14.889 - INFO: <epoch: 81, iter:  26,700> l_pix: 2.7418e-03 
+25-07-21 19:01:25.736 - INFO: <epoch: 81, iter:  26,800> l_pix: 2.9548e-03 
+25-07-21 19:01:36.579 - INFO: <epoch: 81, iter:  26,900> l_pix: 6.1562e-03 
+25-07-21 19:01:47.392 - INFO: <epoch: 82, iter:  27,000> l_pix: 7.7429e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.13it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.10it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.78it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.14it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.26it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.44it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.55it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.65it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.67it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.70it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.74it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.38it/s]
+25-07-21 19:01:59.760 - INFO: <epoch: 82, iter:  27,100> l_pix: 4.0067e-03 
+25-07-21 19:02:10.592 - INFO: <epoch: 82, iter:  27,200> l_pix: 3.1069e-03 
+25-07-21 19:02:21.426 - INFO: <epoch: 82, iter:  27,300> l_pix: 3.7558e-03 
+25-07-21 19:02:32.218 - INFO: <epoch: 83, iter:  27,400> l_pix: 3.4022e-03 
+25-07-21 19:02:43.044 - INFO: <epoch: 83, iter:  27,500> l_pix: 4.7947e-03 
+25-07-21 19:02:53.871 - INFO: <epoch: 83, iter:  27,600> l_pix: 2.6125e-03 
+25-07-21 19:03:04.697 - INFO: <epoch: 84, iter:  27,700> l_pix: 2.8439e-03 
+25-07-21 19:03:15.523 - INFO: <epoch: 84, iter:  27,800> l_pix: 3.5419e-03 
+25-07-21 19:03:26.351 - INFO: <epoch: 84, iter:  27,900> l_pix: 4.5675e-03 
+25-07-21 19:03:37.146 - INFO: <epoch: 85, iter:  28,000> l_pix: 3.5930e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.19it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.09it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.77it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.07it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.29it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.39it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.45it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.53it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.54it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.56it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.59it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.28it/s]
+25-07-21 19:03:49.419 - INFO: <epoch: 85, iter:  28,100> l_pix: 3.8569e-03 
+25-07-21 19:04:00.267 - INFO: <epoch: 85, iter:  28,200> l_pix: 3.3291e-03 
+25-07-21 19:04:11.110 - INFO: <epoch: 85, iter:  28,300> l_pix: 2.2406e-03 
+25-07-21 19:04:22.001 - INFO: <epoch: 86, iter:  28,400> l_pix: 4.8203e-03 
+25-07-21 19:04:32.841 - INFO: <epoch: 86, iter:  28,500> l_pix: 5.7712e-03 
+25-07-21 19:04:43.685 - INFO: <epoch: 86, iter:  28,600> l_pix: 4.2799e-03 
+25-07-21 19:04:54.492 - INFO: <epoch: 87, iter:  28,700> l_pix: 6.2274e-03 
+25-07-21 19:05:05.335 - INFO: <epoch: 87, iter:  28,800> l_pix: 3.7213e-03 
+25-07-21 19:05:16.181 - INFO: <epoch: 87, iter:  28,900> l_pix: 2.2560e-03 
+25-07-21 19:05:26.996 - INFO: <epoch: 88, iter:  29,000> l_pix: 3.9277e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.41it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.95it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.46it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.75it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 63.88it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 63.95it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.02it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.04it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.07it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.09it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.06it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 63.86it/s]
+25-07-21 19:05:39.280 - INFO: <epoch: 88, iter:  29,100> l_pix: 3.7024e-03 
+25-07-21 19:05:50.124 - INFO: <epoch: 88, iter:  29,200> l_pix: 3.8702e-03 
+25-07-21 19:06:00.962 - INFO: <epoch: 88, iter:  29,300> l_pix: 1.0158e-02 
+25-07-21 19:06:11.762 - INFO: <epoch: 89, iter:  29,400> l_pix: 2.3030e-03 
+25-07-21 19:06:22.597 - INFO: <epoch: 89, iter:  29,500> l_pix: 3.1314e-03 
+25-07-21 19:06:33.434 - INFO: <epoch: 89, iter:  29,600> l_pix: 2.1848e-03 
+25-07-21 19:06:44.315 - INFO: <epoch: 90, iter:  29,700> l_pix: 6.8885e-03 
+25-07-21 19:06:55.146 - INFO: <epoch: 90, iter:  29,800> l_pix: 7.1210e-03 
+25-07-21 19:07:05.983 - INFO: <epoch: 90, iter:  29,900> l_pix: 3.2914e-03 
+25-07-21 19:07:16.789 - INFO: <epoch: 91, iter:  30,000> l_pix: 2.5813e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.31it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.13it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.84it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.18it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.35it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.46it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.53it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.57it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.61it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.60it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.63it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.34it/s]
+25-07-21 19:07:18.190 - INFO: Saving models and training states.
+25-07-21 19:07:19.154 - INFO: Saved model in [experiments/hardi150_250721_181149/checkpoint/latest_gen.pth] ...
+25-07-21 19:07:30.020 - INFO: <epoch: 91, iter:  30,100> l_pix: 3.8137e-03 
+25-07-21 19:07:40.867 - INFO: <epoch: 91, iter:  30,200> l_pix: 2.3094e-03 
+25-07-21 19:07:51.706 - INFO: <epoch: 91, iter:  30,300> l_pix: 3.1855e-03 
+25-07-21 19:08:02.510 - INFO: <epoch: 92, iter:  30,400> l_pix: 7.5583e-03 
+25-07-21 19:08:13.356 - INFO: <epoch: 92, iter:  30,500> l_pix: 2.5980e-03 
+25-07-21 19:08:24.200 - INFO: <epoch: 92, iter:  30,600> l_pix: 7.3460e-03 
+25-07-21 19:08:35.008 - INFO: <epoch: 93, iter:  30,700> l_pix: 7.5377e-03 
+25-07-21 19:08:45.852 - INFO: <epoch: 93, iter:  30,800> l_pix: 4.7724e-03 
+25-07-21 19:08:56.694 - INFO: <epoch: 93, iter:  30,900> l_pix: 1.9096e-03 
+25-07-21 19:09:07.581 - INFO: <epoch: 94, iter:  31,000> l_pix: 4.3787e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.31it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.31it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.98it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.32it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.50it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.59it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.68it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.69it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.71it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.76it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.77it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.47it/s]
+25-07-21 19:09:19.842 - INFO: <epoch: 94, iter:  31,100> l_pix: 2.0009e-03 
+25-07-21 19:09:30.688 - INFO: <epoch: 94, iter:  31,200> l_pix: 4.2572e-03 
+25-07-21 19:09:41.529 - INFO: <epoch: 94, iter:  31,300> l_pix: 2.5711e-03 
+25-07-21 19:09:52.336 - INFO: <epoch: 95, iter:  31,400> l_pix: 3.1842e-03 
+25-07-21 19:10:03.205 - INFO: <epoch: 95, iter:  31,500> l_pix: 6.4560e-03 
+25-07-21 19:10:14.053 - INFO: <epoch: 95, iter:  31,600> l_pix: 2.3697e-03 
+25-07-21 19:10:24.863 - INFO: <epoch: 96, iter:  31,700> l_pix: 6.4435e-03 
+25-07-21 19:10:35.733 - INFO: <epoch: 96, iter:  31,800> l_pix: 2.4972e-03 
+25-07-21 19:10:46.581 - INFO: <epoch: 96, iter:  31,900> l_pix: 2.9187e-03 
+25-07-21 19:10:57.393 - INFO: <epoch: 97, iter:  32,000> l_pix: 2.5600e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.35it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.22it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.94it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.27it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.45it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.55it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.59it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.66it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.70it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.71it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.72it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.43it/s]
+25-07-21 19:11:09.652 - INFO: <epoch: 97, iter:  32,100> l_pix: 2.7146e-03 
+25-07-21 19:11:20.544 - INFO: <epoch: 97, iter:  32,200> l_pix: 4.5139e-03 
+25-07-21 19:11:31.475 - INFO: <epoch: 97, iter:  32,300> l_pix: 5.6626e-03 
+25-07-21 19:11:42.285 - INFO: <epoch: 98, iter:  32,400> l_pix: 2.2849e-03 
+25-07-21 19:11:53.132 - INFO: <epoch: 98, iter:  32,500> l_pix: 4.3901e-03 
+25-07-21 19:12:03.991 - INFO: <epoch: 98, iter:  32,600> l_pix: 4.4168e-03 
+25-07-21 19:12:14.801 - INFO: <epoch: 99, iter:  32,700> l_pix: 2.5964e-03 
+25-07-21 19:12:25.645 - INFO: <epoch: 99, iter:  32,800> l_pix: 5.1123e-03 
+25-07-21 19:12:36.496 - INFO: <epoch: 99, iter:  32,900> l_pix: 6.7120e-03 
+25-07-21 19:12:47.314 - INFO: <epoch:100, iter:  33,000> l_pix: 3.0634e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.51it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.44it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 64.15it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.46it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.67it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.76it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.81it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.87it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.89it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.91it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.93it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.64it/s]
+25-07-21 19:12:59.592 - INFO: <epoch:100, iter:  33,100> l_pix: 2.8475e-03 
+25-07-21 19:13:10.436 - INFO: <epoch:100, iter:  33,200> l_pix: 6.0018e-03 
+25-07-21 19:13:21.243 - INFO: <epoch:100, iter:  33,300> l_pix: 4.8554e-03 
+25-07-21 19:13:32.086 - INFO: <epoch:101, iter:  33,400> l_pix: 2.9122e-03 
+25-07-21 19:13:42.926 - INFO: <epoch:101, iter:  33,500> l_pix: 3.0592e-03 
+25-07-21 19:13:53.856 - INFO: <epoch:101, iter:  33,600> l_pix: 1.9564e-03 
+25-07-21 19:14:04.668 - INFO: <epoch:102, iter:  33,700> l_pix: 2.5225e-03 
+25-07-21 19:14:15.504 - INFO: <epoch:102, iter:  33,800> l_pix: 4.8982e-03 
+25-07-21 19:14:26.350 - INFO: <epoch:102, iter:  33,900> l_pix: 2.6583e-03 
+25-07-21 19:14:37.155 - INFO: <epoch:103, iter:  34,000> l_pix: 6.3062e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.21it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.98it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.60it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.99it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.19it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.34it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.37it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.38it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.46it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.54it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.54it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.22it/s]
+25-07-21 19:14:49.433 - INFO: <epoch:103, iter:  34,100> l_pix: 2.5726e-03 
+25-07-21 19:15:00.282 - INFO: <epoch:103, iter:  34,200> l_pix: 2.4773e-03 
+25-07-21 19:15:11.094 - INFO: <epoch:104, iter:  34,300> l_pix: 3.4894e-03 
+25-07-21 19:15:21.947 - INFO: <epoch:104, iter:  34,400> l_pix: 4.1293e-03 
+25-07-21 19:15:32.848 - INFO: <epoch:104, iter:  34,500> l_pix: 7.9299e-03 
+25-07-21 19:15:43.709 - INFO: <epoch:104, iter:  34,600> l_pix: 3.7324e-03 
+25-07-21 19:15:54.519 - INFO: <epoch:105, iter:  34,700> l_pix: 4.1528e-03 
+25-07-21 19:16:05.361 - INFO: <epoch:105, iter:  34,800> l_pix: 2.7088e-03 
+25-07-21 19:16:16.289 - INFO: <epoch:105, iter:  34,900> l_pix: 2.8623e-03 
+25-07-21 19:16:27.147 - INFO: <epoch:106, iter:  35,000> l_pix: 2.8687e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.17it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.96it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.60it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.95it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.16it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.22it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.35it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.37it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.44it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.51it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.58it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.20it/s]
+25-07-21 19:16:39.451 - INFO: <epoch:106, iter:  35,100> l_pix: 2.8065e-03 
+25-07-21 19:16:50.313 - INFO: <epoch:106, iter:  35,200> l_pix: 2.5186e-03 
+25-07-21 19:17:01.134 - INFO: <epoch:107, iter:  35,300> l_pix: 2.9190e-03 
+25-07-21 19:17:11.987 - INFO: <epoch:107, iter:  35,400> l_pix: 3.0560e-03 
+25-07-21 19:17:22.836 - INFO: <epoch:107, iter:  35,500> l_pix: 2.9445e-03 
+25-07-21 19:17:33.684 - INFO: <epoch:107, iter:  35,600> l_pix: 2.2101e-03 
+25-07-21 19:17:44.507 - INFO: <epoch:108, iter:  35,700> l_pix: 2.5864e-03 
+25-07-21 19:17:55.481 - INFO: <epoch:108, iter:  35,800> l_pix: 3.8449e-03 
+25-07-21 19:18:06.329 - INFO: <epoch:108, iter:  35,900> l_pix: 6.6669e-03 
+25-07-21 19:18:17.137 - INFO: <epoch:109, iter:  36,000> l_pix: 4.8079e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.96it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.97it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.71it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.07it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.26it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.39it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.47it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.51it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.56it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.59it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.62it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.28it/s]
+25-07-21 19:18:29.499 - INFO: <epoch:109, iter:  36,100> l_pix: 2.6845e-03 
+25-07-21 19:18:40.421 - INFO: <epoch:109, iter:  36,200> l_pix: 2.2878e-03 
+25-07-21 19:18:51.244 - INFO: <epoch:110, iter:  36,300> l_pix: 2.9779e-03 
+25-07-21 19:19:02.096 - INFO: <epoch:110, iter:  36,400> l_pix: 2.8203e-03 
+25-07-21 19:19:12.946 - INFO: <epoch:110, iter:  36,500> l_pix: 3.0158e-03 
+25-07-21 19:19:23.787 - INFO: <epoch:110, iter:  36,600> l_pix: 3.2230e-03 
+25-07-21 19:19:34.593 - INFO: <epoch:111, iter:  36,700> l_pix: 2.0034e-03 
+25-07-21 19:19:45.427 - INFO: <epoch:111, iter:  36,800> l_pix: 2.7774e-03 
+25-07-21 19:19:56.263 - INFO: <epoch:111, iter:  36,900> l_pix: 4.1048e-03 
+25-07-21 19:20:07.080 - INFO: <epoch:112, iter:  37,000> l_pix: 2.0948e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.30it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.18it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.68it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.95it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.13it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.27it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.37it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.43it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.50it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.53it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.51it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.21it/s]
+25-07-21 19:20:19.378 - INFO: <epoch:112, iter:  37,100> l_pix: 3.4677e-03 
+25-07-21 19:20:30.211 - INFO: <epoch:112, iter:  37,200> l_pix: 1.8943e-03 
+25-07-21 19:20:41.016 - INFO: <epoch:113, iter:  37,300> l_pix: 6.2378e-03 
+25-07-21 19:20:51.860 - INFO: <epoch:113, iter:  37,400> l_pix: 4.3977e-03 
+25-07-21 19:21:02.778 - INFO: <epoch:113, iter:  37,500> l_pix: 5.9167e-03 
+25-07-21 19:21:13.609 - INFO: <epoch:113, iter:  37,600> l_pix: 3.1743e-03 
+25-07-21 19:21:24.407 - INFO: <epoch:114, iter:  37,700> l_pix: 2.4812e-03 
+25-07-21 19:21:35.238 - INFO: <epoch:114, iter:  37,800> l_pix: 2.6200e-03 
+25-07-21 19:21:46.067 - INFO: <epoch:114, iter:  37,900> l_pix: 2.9879e-03 
+25-07-21 19:21:56.866 - INFO: <epoch:115, iter:  38,000> l_pix: 5.7529e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.13it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.00it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.65it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.97it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.15it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.22it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.22it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.29it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.30it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.28it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.26it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.04it/s]
+25-07-21 19:22:09.179 - INFO: <epoch:115, iter:  38,100> l_pix: 4.8996e-03 
+25-07-21 19:22:20.051 - INFO: <epoch:115, iter:  38,200> l_pix: 2.4545e-03 
+25-07-21 19:22:30.884 - INFO: <epoch:116, iter:  38,300> l_pix: 2.2339e-03 
+25-07-21 19:22:41.727 - INFO: <epoch:116, iter:  38,400> l_pix: 3.5487e-03 
+25-07-21 19:22:52.565 - INFO: <epoch:116, iter:  38,500> l_pix: 2.7617e-03 
+25-07-21 19:23:03.407 - INFO: <epoch:116, iter:  38,600> l_pix: 2.4077e-03 
+25-07-21 19:23:14.215 - INFO: <epoch:117, iter:  38,700> l_pix: 2.6851e-03 
+25-07-21 19:23:25.156 - INFO: <epoch:117, iter:  38,800> l_pix: 2.3546e-03 
+25-07-21 19:23:35.998 - INFO: <epoch:117, iter:  38,900> l_pix: 2.0853e-03 
+25-07-21 19:23:46.805 - INFO: <epoch:118, iter:  39,000> l_pix: 3.0322e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   7%|▋         | 6/81 [00:00<00:01, 59.94it/s]sampling loop time step:  16%|█▌        | 13/81 [00:00<00:01, 62.42it/s]sampling loop time step:  25%|██▍       | 20/81 [00:00<00:00, 63.30it/s]sampling loop time step:  33%|███▎      | 27/81 [00:00<00:00, 63.61it/s]sampling loop time step:  42%|████▏     | 34/81 [00:00<00:00, 63.82it/s]sampling loop time step:  51%|█████     | 41/81 [00:00<00:00, 63.94it/s]sampling loop time step:  59%|█████▉    | 48/81 [00:00<00:00, 64.03it/s]sampling loop time step:  68%|██████▊   | 55/81 [00:00<00:00, 64.03it/s]sampling loop time step:  77%|███████▋  | 62/81 [00:00<00:00, 64.09it/s]sampling loop time step:  85%|████████▌ | 69/81 [00:01<00:00, 64.16it/s]sampling loop time step:  94%|█████████▍| 76/81 [00:01<00:00, 64.17it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 63.83it/s]
+25-07-21 19:23:59.149 - INFO: <epoch:118, iter:  39,100> l_pix: 2.6292e-03 
+25-07-21 19:24:09.996 - INFO: <epoch:118, iter:  39,200> l_pix: 3.7557e-03 
+25-07-21 19:24:20.796 - INFO: <epoch:119, iter:  39,300> l_pix: 2.3599e-03 
+25-07-21 19:24:31.650 - INFO: <epoch:119, iter:  39,400> l_pix: 2.1429e-03 
+25-07-21 19:24:42.484 - INFO: <epoch:119, iter:  39,500> l_pix: 4.1868e-03 
+25-07-21 19:24:53.320 - INFO: <epoch:119, iter:  39,600> l_pix: 5.0765e-03 
+25-07-21 19:25:04.120 - INFO: <epoch:120, iter:  39,700> l_pix: 5.0424e-03 
+25-07-21 19:25:15.007 - INFO: <epoch:120, iter:  39,800> l_pix: 2.0788e-03 
+25-07-21 19:25:25.843 - INFO: <epoch:120, iter:  39,900> l_pix: 3.4317e-03 
+25-07-21 19:25:36.643 - INFO: <epoch:121, iter:  40,000> l_pix: 4.8904e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.85it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.96it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.73it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.05it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.27it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.39it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.48it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.53it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.55it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.58it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.61it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.28it/s]
+25-07-21 19:25:38.073 - INFO: Saving models and training states.
+25-07-21 19:25:39.335 - INFO: Saved model in [experiments/hardi150_250721_181149/checkpoint/latest_gen.pth] ...
+25-07-21 19:25:50.278 - INFO: <epoch:121, iter:  40,100> l_pix: 2.3014e-03 
+25-07-21 19:26:01.114 - INFO: <epoch:121, iter:  40,200> l_pix: 3.0837e-03 
+25-07-21 19:26:11.921 - INFO: <epoch:122, iter:  40,300> l_pix: 4.1259e-03 
+25-07-21 19:26:22.754 - INFO: <epoch:122, iter:  40,400> l_pix: 2.1898e-03 
+25-07-21 19:26:33.592 - INFO: <epoch:122, iter:  40,500> l_pix: 2.2488e-03 
+25-07-21 19:26:44.436 - INFO: <epoch:122, iter:  40,600> l_pix: 5.9995e-03 
+25-07-21 19:26:55.252 - INFO: <epoch:123, iter:  40,700> l_pix: 2.8319e-03 
+25-07-21 19:27:06.092 - INFO: <epoch:123, iter:  40,800> l_pix: 2.0175e-03 
+25-07-21 19:27:16.940 - INFO: <epoch:123, iter:  40,900> l_pix: 2.5029e-03 
+25-07-21 19:27:27.744 - INFO: <epoch:124, iter:  41,000> l_pix: 9.1852e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.61it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.71it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.52it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.88it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.14it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.31it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.36it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.42it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.52it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.50it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.56it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.16it/s]
+25-07-21 19:27:40.110 - INFO: <epoch:124, iter:  41,100> l_pix: 3.1276e-03 
+25-07-21 19:27:50.951 - INFO: <epoch:124, iter:  41,200> l_pix: 9.2072e-03 
+25-07-21 19:28:01.825 - INFO: <epoch:125, iter:  41,300> l_pix: 1.6619e-03 
+25-07-21 19:28:12.751 - INFO: <epoch:125, iter:  41,400> l_pix: 3.2396e-03 
+25-07-21 19:28:23.597 - INFO: <epoch:125, iter:  41,500> l_pix: 2.2070e-03 
+25-07-21 19:28:34.544 - INFO: <epoch:125, iter:  41,600> l_pix: 4.4382e-03 
+25-07-21 19:28:45.359 - INFO: <epoch:126, iter:  41,700> l_pix: 2.9460e-03 
+25-07-21 19:28:56.206 - INFO: <epoch:126, iter:  41,800> l_pix: 2.4127e-03 
+25-07-21 19:29:07.050 - INFO: <epoch:126, iter:  41,900> l_pix: 2.5506e-03 
+25-07-21 19:29:17.883 - INFO: <epoch:127, iter:  42,000> l_pix: 4.2045e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.29it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.03it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.59it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.84it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 63.99it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.09it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.15it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.20it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.24it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.23it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.25it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.00it/s]
+25-07-21 19:29:30.241 - INFO: <epoch:127, iter:  42,100> l_pix: 3.1465e-03 
+25-07-21 19:29:41.087 - INFO: <epoch:127, iter:  42,200> l_pix: 2.7368e-03 
+25-07-21 19:29:51.901 - INFO: <epoch:128, iter:  42,300> l_pix: 5.5009e-03 
+25-07-21 19:30:02.746 - INFO: <epoch:128, iter:  42,400> l_pix: 4.5583e-03 
+25-07-21 19:30:13.596 - INFO: <epoch:128, iter:  42,500> l_pix: 1.9849e-03 
+25-07-21 19:30:24.644 - INFO: <epoch:128, iter:  42,600> l_pix: 2.9420e-03 
+25-07-21 19:30:35.550 - INFO: <epoch:129, iter:  42,700> l_pix: 2.9438e-03 
+25-07-21 19:30:46.401 - INFO: <epoch:129, iter:  42,800> l_pix: 2.6954e-03 
+25-07-21 19:30:57.246 - INFO: <epoch:129, iter:  42,900> l_pix: 4.9518e-03 
+25-07-21 19:31:08.056 - INFO: <epoch:130, iter:  43,000> l_pix: 2.6494e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.21it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.17it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.75it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.05it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.23it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.32it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.38it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.44it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.37it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.43it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.45it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.18it/s]
+25-07-21 19:31:20.366 - INFO: <epoch:130, iter:  43,100> l_pix: 2.6336e-03 
+25-07-21 19:31:31.206 - INFO: <epoch:130, iter:  43,200> l_pix: 3.7171e-03 
+25-07-21 19:31:42.012 - INFO: <epoch:131, iter:  43,300> l_pix: 2.8306e-03 
+25-07-21 19:31:52.849 - INFO: <epoch:131, iter:  43,400> l_pix: 1.9328e-03 
+25-07-21 19:32:03.686 - INFO: <epoch:131, iter:  43,500> l_pix: 2.4398e-03 
+25-07-21 19:32:14.527 - INFO: <epoch:131, iter:  43,600> l_pix: 2.5283e-03 
+25-07-21 19:32:25.360 - INFO: <epoch:132, iter:  43,700> l_pix: 2.3062e-03 
+25-07-21 19:32:36.200 - INFO: <epoch:132, iter:  43,800> l_pix: 5.9396e-03 
+25-07-21 19:32:47.038 - INFO: <epoch:132, iter:  43,900> l_pix: 2.7360e-03 
+25-07-21 19:32:57.931 - INFO: <epoch:133, iter:  44,000> l_pix: 3.7370e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.00it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.96it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.57it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.87it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.04it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.16it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.22it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.25it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.28it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.27it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.29it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.03it/s]
+25-07-21 19:33:10.192 - INFO: <epoch:133, iter:  44,100> l_pix: 3.8027e-03 
+25-07-21 19:33:21.022 - INFO: <epoch:133, iter:  44,200> l_pix: 2.2712e-03 
+25-07-21 19:33:31.821 - INFO: <epoch:134, iter:  44,300> l_pix: 4.9856e-03 
+25-07-21 19:33:42.653 - INFO: <epoch:134, iter:  44,400> l_pix: 2.5478e-03 
+25-07-21 19:33:53.548 - INFO: <epoch:134, iter:  44,500> l_pix: 3.8525e-03 
+25-07-21 19:34:04.383 - INFO: <epoch:134, iter:  44,600> l_pix: 6.6772e-03 
+25-07-21 19:34:15.185 - INFO: <epoch:135, iter:  44,700> l_pix: 2.1533e-03 
+25-07-21 19:34:26.020 - INFO: <epoch:135, iter:  44,800> l_pix: 6.7468e-03 
+25-07-21 19:34:36.857 - INFO: <epoch:135, iter:  44,900> l_pix: 2.7523e-03 
+25-07-21 19:34:47.653 - INFO: <epoch:136, iter:  45,000> l_pix: 2.1708e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.26it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.15it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.74it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.98it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.14it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.23it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.28it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.33it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.32it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.34it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.38it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.12it/s]
+25-07-21 19:34:59.939 - INFO: <epoch:136, iter:  45,100> l_pix: 2.2852e-03 
+25-07-21 19:35:10.865 - INFO: <epoch:136, iter:  45,200> l_pix: 3.7854e-03 
+25-07-21 19:35:21.763 - INFO: <epoch:137, iter:  45,300> l_pix: 2.8468e-03 
+25-07-21 19:35:32.608 - INFO: <epoch:137, iter:  45,400> l_pix: 6.9402e-03 
+25-07-21 19:35:43.455 - INFO: <epoch:137, iter:  45,500> l_pix: 2.0850e-03 
+25-07-21 19:35:54.305 - INFO: <epoch:137, iter:  45,600> l_pix: 2.9541e-03 
+25-07-21 19:36:05.122 - INFO: <epoch:138, iter:  45,700> l_pix: 2.1330e-03 
+25-07-21 19:36:15.982 - INFO: <epoch:138, iter:  45,800> l_pix: 5.7585e-03 
+25-07-21 19:36:26.834 - INFO: <epoch:138, iter:  45,900> l_pix: 2.6039e-03 
+25-07-21 19:36:37.676 - INFO: <epoch:139, iter:  46,000> l_pix: 2.3894e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.26it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.25it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.95it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.27it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.45it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.55it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.57it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.59it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.60it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.65it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.69it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.40it/s]
+25-07-21 19:36:49.954 - INFO: <epoch:139, iter:  46,100> l_pix: 2.1173e-03 
+25-07-21 19:37:00.799 - INFO: <epoch:139, iter:  46,200> l_pix: 2.7344e-03 
+25-07-21 19:37:11.748 - INFO: <epoch:140, iter:  46,300> l_pix: 3.9673e-03 
+25-07-21 19:37:22.588 - INFO: <epoch:140, iter:  46,400> l_pix: 3.5979e-03 
+25-07-21 19:37:33.437 - INFO: <epoch:140, iter:  46,500> l_pix: 5.8378e-03 
+25-07-21 19:37:44.369 - INFO: <epoch:140, iter:  46,600> l_pix: 2.3382e-03 
+25-07-21 19:37:55.182 - INFO: <epoch:141, iter:  46,700> l_pix: 1.9595e-03 
+25-07-21 19:38:06.038 - INFO: <epoch:141, iter:  46,800> l_pix: 2.2534e-03 
+25-07-21 19:38:16.890 - INFO: <epoch:141, iter:  46,900> l_pix: 2.2181e-03 
+25-07-21 19:38:27.710 - INFO: <epoch:142, iter:  47,000> l_pix: 2.6346e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.01it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.94it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.56it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.85it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.00it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.06it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.15it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.18it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.22it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.27it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.29it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 63.99it/s]
+25-07-21 19:38:40.191 - INFO: <epoch:142, iter:  47,100> l_pix: 2.4775e-03 
+25-07-21 19:38:51.038 - INFO: <epoch:142, iter:  47,200> l_pix: 3.9321e-03 
+25-07-21 19:39:01.852 - INFO: <epoch:143, iter:  47,300> l_pix: 6.7730e-03 
+25-07-21 19:39:12.698 - INFO: <epoch:143, iter:  47,400> l_pix: 3.3479e-03 
+25-07-21 19:39:23.545 - INFO: <epoch:143, iter:  47,500> l_pix: 2.4159e-03 
+25-07-21 19:39:34.396 - INFO: <epoch:143, iter:  47,600> l_pix: 1.7940e-03 
+25-07-21 19:39:45.208 - INFO: <epoch:144, iter:  47,700> l_pix: 2.7117e-03 
+25-07-21 19:39:56.059 - INFO: <epoch:144, iter:  47,800> l_pix: 2.2471e-03 
+25-07-21 19:40:06.987 - INFO: <epoch:144, iter:  47,900> l_pix: 2.5884e-03 
+25-07-21 19:40:17.801 - INFO: <epoch:145, iter:  48,000> l_pix: 2.3575e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.19it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.14it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.82it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.13it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.29it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.36it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.44it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.51it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.57it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.58it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.60it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.29it/s]
+25-07-21 19:40:30.282 - INFO: <epoch:145, iter:  48,100> l_pix: 3.5329e-03 
+25-07-21 19:40:41.157 - INFO: <epoch:145, iter:  48,200> l_pix: 2.7715e-03 
+25-07-21 19:40:52.004 - INFO: <epoch:146, iter:  48,300> l_pix: 2.2473e-03 
+25-07-21 19:41:02.870 - INFO: <epoch:146, iter:  48,400> l_pix: 3.3378e-03 
+25-07-21 19:41:13.739 - INFO: <epoch:146, iter:  48,500> l_pix: 2.3793e-03 
+25-07-21 19:41:24.610 - INFO: <epoch:146, iter:  48,600> l_pix: 5.4504e-03 
+25-07-21 19:41:35.444 - INFO: <epoch:147, iter:  48,700> l_pix: 2.0254e-03 
+25-07-21 19:41:46.321 - INFO: <epoch:147, iter:  48,800> l_pix: 2.0677e-03 
+25-07-21 19:41:57.199 - INFO: <epoch:147, iter:  48,900> l_pix: 5.5149e-03 
+25-07-21 19:42:08.042 - INFO: <epoch:148, iter:  49,000> l_pix: 2.2207e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.95it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.94it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.53it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.78it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 63.94it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.07it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.14it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.19it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.19it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.20it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.22it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 63.96it/s]
+25-07-21 19:42:20.366 - INFO: <epoch:148, iter:  49,100> l_pix: 2.3528e-03 
+25-07-21 19:42:31.296 - INFO: <epoch:148, iter:  49,200> l_pix: 2.1064e-03 
+25-07-21 19:42:42.114 - INFO: <epoch:149, iter:  49,300> l_pix: 2.7639e-03 
+25-07-21 19:42:52.982 - INFO: <epoch:149, iter:  49,400> l_pix: 3.2841e-03 
+25-07-21 19:43:03.833 - INFO: <epoch:149, iter:  49,500> l_pix: 2.6471e-03 
+25-07-21 19:43:14.684 - INFO: <epoch:149, iter:  49,600> l_pix: 2.9401e-03 
+25-07-21 19:43:25.518 - INFO: <epoch:150, iter:  49,700> l_pix: 4.1080e-03 
+25-07-21 19:43:36.374 - INFO: <epoch:150, iter:  49,800> l_pix: 2.4823e-03 
+25-07-21 19:43:47.232 - INFO: <epoch:150, iter:  49,900> l_pix: 3.0732e-03 
+25-07-21 19:43:58.052 - INFO: <epoch:151, iter:  50,000> l_pix: 2.1808e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.17it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.99it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.65it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.04it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.17it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.35it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.46it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.42it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.50it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.51it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.53it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.22it/s]
+25-07-21 19:43:59.547 - INFO: Saving models and training states.
+25-07-21 19:44:00.945 - INFO: Saved model in [experiments/hardi150_250721_181149/checkpoint/latest_gen.pth] ...
+25-07-21 19:44:11.871 - INFO: <epoch:151, iter:  50,100> l_pix: 2.3183e-03 
+25-07-21 19:44:22.746 - INFO: <epoch:151, iter:  50,200> l_pix: 2.4668e-03 
+25-07-21 19:44:33.587 - INFO: <epoch:152, iter:  50,300> l_pix: 2.3597e-03 
+25-07-21 19:44:44.548 - INFO: <epoch:152, iter:  50,400> l_pix: 3.0328e-03 
+25-07-21 19:44:55.409 - INFO: <epoch:152, iter:  50,500> l_pix: 2.3338e-03 
+25-07-21 19:45:06.276 - INFO: <epoch:152, iter:  50,600> l_pix: 2.4051e-03 
+25-07-21 19:45:17.105 - INFO: <epoch:153, iter:  50,700> l_pix: 4.8479e-03 
+25-07-21 19:45:27.982 - INFO: <epoch:153, iter:  50,800> l_pix: 2.0825e-03 
+25-07-21 19:45:38.856 - INFO: <epoch:153, iter:  50,900> l_pix: 5.0660e-03 
+25-07-21 19:45:49.696 - INFO: <epoch:154, iter:  51,000> l_pix: 4.5480e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.26it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.27it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.90it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.23it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.43it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.50it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.57it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.62it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.64it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.69it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.71it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.40it/s]
+25-07-21 19:46:02.030 - INFO: <epoch:154, iter:  51,100> l_pix: 3.7931e-03 
+25-07-21 19:46:12.886 - INFO: <epoch:154, iter:  51,200> l_pix: 2.6354e-03 
+25-07-21 19:46:23.705 - INFO: <epoch:155, iter:  51,300> l_pix: 2.8358e-03 
+25-07-21 19:46:34.561 - INFO: <epoch:155, iter:  51,400> l_pix: 2.8244e-03 
+25-07-21 19:46:45.424 - INFO: <epoch:155, iter:  51,500> l_pix: 2.2470e-03 
+25-07-21 19:46:56.279 - INFO: <epoch:155, iter:  51,600> l_pix: 3.8604e-03 
+25-07-21 19:47:07.189 - INFO: <epoch:156, iter:  51,700> l_pix: 5.8981e-03 
+25-07-21 19:47:18.053 - INFO: <epoch:156, iter:  51,800> l_pix: 5.2429e-03 
+25-07-21 19:47:28.932 - INFO: <epoch:156, iter:  51,900> l_pix: 6.3622e-03 
+25-07-21 19:47:39.754 - INFO: <epoch:157, iter:  52,000> l_pix: 5.8374e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.00it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.76it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.36it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.65it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 63.81it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 63.92it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 63.98it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.04it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.07it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.09it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.13it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 63.83it/s]
+25-07-21 19:47:52.068 - INFO: <epoch:157, iter:  52,100> l_pix: 1.2564e-02 
+25-07-21 19:48:02.913 - INFO: <epoch:157, iter:  52,200> l_pix: 2.2564e-03 
+25-07-21 19:48:13.726 - INFO: <epoch:158, iter:  52,300> l_pix: 2.5195e-03 
+25-07-21 19:48:24.567 - INFO: <epoch:158, iter:  52,400> l_pix: 2.3609e-03 
+25-07-21 19:48:35.405 - INFO: <epoch:158, iter:  52,500> l_pix: 3.7769e-03 
+25-07-21 19:48:46.310 - INFO: <epoch:158, iter:  52,600> l_pix: 2.6845e-03 
+25-07-21 19:48:57.121 - INFO: <epoch:159, iter:  52,700> l_pix: 3.5148e-03 
+25-07-21 19:49:07.966 - INFO: <epoch:159, iter:  52,800> l_pix: 2.6420e-03 
+25-07-21 19:49:18.813 - INFO: <epoch:159, iter:  52,900> l_pix: 2.8552e-03 
+25-07-21 19:49:29.714 - INFO: <epoch:160, iter:  53,000> l_pix: 2.0625e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.02it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.05it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.79it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.04it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.26it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.42it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.47it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.53it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.59it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.61it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.65it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.31it/s]
+25-07-21 19:49:42.015 - INFO: <epoch:160, iter:  53,100> l_pix: 6.5938e-03 
+25-07-21 19:49:52.860 - INFO: <epoch:160, iter:  53,200> l_pix: 2.5721e-03 
+25-07-21 19:50:03.668 - INFO: <epoch:161, iter:  53,300> l_pix: 2.3397e-03 
+25-07-21 19:50:14.506 - INFO: <epoch:161, iter:  53,400> l_pix: 2.3805e-03 
+25-07-21 19:50:25.350 - INFO: <epoch:161, iter:  53,500> l_pix: 2.3825e-03 
+25-07-21 19:50:36.192 - INFO: <epoch:161, iter:  53,600> l_pix: 2.2879e-03 
+25-07-21 19:50:47.012 - INFO: <epoch:162, iter:  53,700> l_pix: 2.3841e-03 
+25-07-21 19:50:57.862 - INFO: <epoch:162, iter:  53,800> l_pix: 2.3611e-03 
+25-07-21 19:51:08.718 - INFO: <epoch:162, iter:  53,900> l_pix: 2.1264e-03 
+25-07-21 19:51:19.531 - INFO: <epoch:163, iter:  54,000> l_pix: 2.2568e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.32it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.23it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.75it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.95it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.11it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.18it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.23it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.25it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.23it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.23it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.29it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.06it/s]
+25-07-21 19:51:31.849 - INFO: <epoch:163, iter:  54,100> l_pix: 2.3171e-03 
+25-07-21 19:51:42.696 - INFO: <epoch:163, iter:  54,200> l_pix: 5.2931e-03 
+25-07-21 19:51:53.591 - INFO: <epoch:164, iter:  54,300> l_pix: 3.2196e-03 
+25-07-21 19:52:04.432 - INFO: <epoch:164, iter:  54,400> l_pix: 3.3900e-03 
+25-07-21 19:52:15.271 - INFO: <epoch:164, iter:  54,500> l_pix: 3.1038e-03 
+25-07-21 19:52:26.114 - INFO: <epoch:164, iter:  54,600> l_pix: 2.0014e-03 
+25-07-21 19:52:37.146 - INFO: <epoch:165, iter:  54,700> l_pix: 2.5733e-03 
+25-07-21 19:52:48.006 - INFO: <epoch:165, iter:  54,800> l_pix: 2.3312e-03 
+25-07-21 19:52:58.856 - INFO: <epoch:165, iter:  54,900> l_pix: 6.4990e-03 
+25-07-21 19:53:09.671 - INFO: <epoch:166, iter:  55,000> l_pix: 2.2344e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   7%|▋         | 6/81 [00:00<00:01, 59.75it/s]sampling loop time step:  16%|█▌        | 13/81 [00:00<00:01, 62.70it/s]sampling loop time step:  25%|██▍       | 20/81 [00:00<00:00, 63.47it/s]sampling loop time step:  33%|███▎      | 27/81 [00:00<00:00, 63.81it/s]sampling loop time step:  42%|████▏     | 34/81 [00:00<00:00, 64.05it/s]sampling loop time step:  51%|█████     | 41/81 [00:00<00:00, 64.16it/s]sampling loop time step:  59%|█████▉    | 48/81 [00:00<00:00, 64.21it/s]sampling loop time step:  68%|██████▊   | 55/81 [00:00<00:00, 64.26it/s]sampling loop time step:  77%|███████▋  | 62/81 [00:00<00:00, 64.27it/s]sampling loop time step:  85%|████████▌ | 69/81 [00:01<00:00, 64.31it/s]sampling loop time step:  94%|█████████▍| 76/81 [00:01<00:00, 64.32it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.00it/s]
+25-07-21 19:53:21.967 - INFO: <epoch:166, iter:  55,100> l_pix: 2.1355e-03 
+25-07-21 19:53:32.828 - INFO: <epoch:166, iter:  55,200> l_pix: 2.5010e-03 
+25-07-21 19:53:43.660 - INFO: <epoch:167, iter:  55,300> l_pix: 2.0475e-03 
+25-07-21 19:53:54.510 - INFO: <epoch:167, iter:  55,400> l_pix: 3.4653e-03 
+25-07-21 19:54:05.361 - INFO: <epoch:167, iter:  55,500> l_pix: 3.2884e-03 
+25-07-21 19:54:16.296 - INFO: <epoch:167, iter:  55,600> l_pix: 3.1982e-03 
+25-07-21 19:54:27.110 - INFO: <epoch:168, iter:  55,700> l_pix: 3.3492e-03 
+25-07-21 19:54:37.956 - INFO: <epoch:168, iter:  55,800> l_pix: 4.3628e-03 
+25-07-21 19:54:48.806 - INFO: <epoch:168, iter:  55,900> l_pix: 3.0289e-03 
+25-07-21 19:54:59.622 - INFO: <epoch:169, iter:  56,000> l_pix: 4.6686e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.77it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.92it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.70it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.04it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.09it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.03it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.11it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.31it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.43it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.44it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.44it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.11it/s]
+25-07-21 19:55:11.921 - INFO: <epoch:169, iter:  56,100> l_pix: 2.1218e-03 
+25-07-21 19:55:22.793 - INFO: <epoch:169, iter:  56,200> l_pix: 2.3935e-03 
+25-07-21 19:55:33.624 - INFO: <epoch:170, iter:  56,300> l_pix: 4.4826e-03 
+25-07-21 19:55:44.476 - INFO: <epoch:170, iter:  56,400> l_pix: 3.1838e-03 
+25-07-21 19:55:55.329 - INFO: <epoch:170, iter:  56,500> l_pix: 6.1637e-03 
+25-07-21 19:56:06.178 - INFO: <epoch:170, iter:  56,600> l_pix: 7.0528e-03 
+25-07-21 19:56:16.986 - INFO: <epoch:171, iter:  56,700> l_pix: 2.0635e-03 
+25-07-21 19:56:27.828 - INFO: <epoch:171, iter:  56,800> l_pix: 2.5725e-03 
+25-07-21 19:56:38.727 - INFO: <epoch:171, iter:  56,900> l_pix: 2.4783e-03 
+25-07-21 19:56:49.627 - INFO: <epoch:172, iter:  57,000> l_pix: 2.5669e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.30it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.26it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.87it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.15it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.27it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.32it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.40it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.43it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.40it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.45it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.41it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.20it/s]
+25-07-21 19:57:01.917 - INFO: <epoch:172, iter:  57,100> l_pix: 2.8519e-03 
+25-07-21 19:57:12.760 - INFO: <epoch:172, iter:  57,200> l_pix: 5.1299e-03 
+25-07-21 19:57:23.569 - INFO: <epoch:173, iter:  57,300> l_pix: 2.3685e-03 
+25-07-21 19:57:34.414 - INFO: <epoch:173, iter:  57,400> l_pix: 2.1515e-03 
+25-07-21 19:57:45.344 - INFO: <epoch:173, iter:  57,500> l_pix: 4.7189e-03 
+25-07-21 19:57:56.182 - INFO: <epoch:173, iter:  57,600> l_pix: 2.1570e-03 
+25-07-21 19:58:06.991 - INFO: <epoch:174, iter:  57,700> l_pix: 1.7682e-03 
+25-07-21 19:58:17.838 - INFO: <epoch:174, iter:  57,800> l_pix: 2.0041e-03 
+25-07-21 19:58:28.688 - INFO: <epoch:174, iter:  57,900> l_pix: 2.0616e-03 
+25-07-21 19:58:39.504 - INFO: <epoch:175, iter:  58,000> l_pix: 2.5809e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.07it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.95it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.69it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.05it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.21it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.35it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.43it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.39it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.43it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.43it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.46it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.19it/s]
+25-07-21 19:58:51.915 - INFO: <epoch:175, iter:  58,100> l_pix: 2.2830e-03 
+25-07-21 19:59:02.791 - INFO: <epoch:175, iter:  58,200> l_pix: 3.2312e-03 
+25-07-21 19:59:13.720 - INFO: <epoch:176, iter:  58,300> l_pix: 2.2112e-03 
+25-07-21 19:59:24.597 - INFO: <epoch:176, iter:  58,400> l_pix: 2.0003e-03 
+25-07-21 19:59:35.471 - INFO: <epoch:176, iter:  58,500> l_pix: 1.7584e-03 
+25-07-21 19:59:46.386 - INFO: <epoch:176, iter:  58,600> l_pix: 2.5641e-03 
+25-07-21 19:59:57.233 - INFO: <epoch:177, iter:  58,700> l_pix: 2.4207e-03 
+25-07-21 20:00:08.100 - INFO: <epoch:177, iter:  58,800> l_pix: 1.9635e-03 
+25-07-21 20:00:18.971 - INFO: <epoch:177, iter:  58,900> l_pix: 2.6179e-03 
+25-07-21 20:00:29.917 - INFO: <epoch:178, iter:  59,000> l_pix: 2.9195e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.23it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.08it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.71it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.00it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.20it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.30it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.35it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.42it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.44it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.45it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.46it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.19it/s]
+25-07-21 20:00:42.231 - INFO: <epoch:178, iter:  59,100> l_pix: 2.4339e-03 
+25-07-21 20:00:53.089 - INFO: <epoch:178, iter:  59,200> l_pix: 4.4202e-03 
+25-07-21 20:01:03.886 - INFO: <epoch:179, iter:  59,300> l_pix: 2.5799e-03 
+25-07-21 20:01:14.776 - INFO: <epoch:179, iter:  59,400> l_pix: 3.1694e-03 
+25-07-21 20:01:25.630 - INFO: <epoch:179, iter:  59,500> l_pix: 2.8550e-03 
+25-07-21 20:01:36.566 - INFO: <epoch:179, iter:  59,600> l_pix: 4.3398e-03 
+25-07-21 20:01:47.377 - INFO: <epoch:180, iter:  59,700> l_pix: 2.5035e-03 
+25-07-21 20:01:58.258 - INFO: <epoch:180, iter:  59,800> l_pix: 2.2792e-03 
+25-07-21 20:02:09.108 - INFO: <epoch:180, iter:  59,900> l_pix: 2.3315e-03 
+25-07-21 20:02:19.929 - INFO: <epoch:181, iter:  60,000> l_pix: 2.6529e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.17it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.08it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.67it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.94it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.11it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.20it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.26it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.31it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.32it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.32it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.35it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.09it/s]
+25-07-21 20:02:21.430 - INFO: Saving models and training states.
+25-07-21 20:02:22.518 - INFO: Saved model in [experiments/hardi150_250721_181149/checkpoint/latest_gen.pth] ...
+25-07-21 20:02:33.396 - INFO: <epoch:181, iter:  60,100> l_pix: 4.0067e-03 
+25-07-21 20:02:44.273 - INFO: <epoch:181, iter:  60,200> l_pix: 2.0334e-03 
+25-07-21 20:02:55.110 - INFO: <epoch:182, iter:  60,300> l_pix: 2.6500e-03 
+25-07-21 20:03:05.977 - INFO: <epoch:182, iter:  60,400> l_pix: 2.4667e-03 
+25-07-21 20:03:16.839 - INFO: <epoch:182, iter:  60,500> l_pix: 2.4920e-03 
+25-07-21 20:03:27.699 - INFO: <epoch:182, iter:  60,600> l_pix: 2.1873e-03 
+25-07-21 20:03:38.517 - INFO: <epoch:183, iter:  60,700> l_pix: 2.0559e-03 
+25-07-21 20:03:49.439 - INFO: <epoch:183, iter:  60,800> l_pix: 3.4373e-03 
+25-07-21 20:04:00.310 - INFO: <epoch:183, iter:  60,900> l_pix: 2.6605e-03 
+25-07-21 20:04:11.137 - INFO: <epoch:184, iter:  61,000> l_pix: 2.3457e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.45it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.41it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 64.09it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.42it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.61it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.58it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.64it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.74it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.81it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.83it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.84it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.54it/s]
+25-07-21 20:04:23.491 - INFO: <epoch:184, iter:  61,100> l_pix: 1.8570e-03 
+25-07-21 20:04:34.341 - INFO: <epoch:184, iter:  61,200> l_pix: 2.4187e-03 
+25-07-21 20:04:45.188 - INFO: <epoch:185, iter:  61,300> l_pix: 3.4097e-03 
+25-07-21 20:04:56.052 - INFO: <epoch:185, iter:  61,400> l_pix: 2.2905e-03 
+25-07-21 20:05:06.907 - INFO: <epoch:185, iter:  61,500> l_pix: 2.0641e-03 
+25-07-21 20:05:17.760 - INFO: <epoch:185, iter:  61,600> l_pix: 2.6334e-03 
+25-07-21 20:05:28.575 - INFO: <epoch:186, iter:  61,700> l_pix: 2.5564e-03 
+25-07-21 20:05:39.430 - INFO: <epoch:186, iter:  61,800> l_pix: 2.1914e-03 
+25-07-21 20:05:50.282 - INFO: <epoch:186, iter:  61,900> l_pix: 9.1511e-03 
+25-07-21 20:06:01.106 - INFO: <epoch:187, iter:  62,000> l_pix: 1.9609e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.76it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.74it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.45it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.75it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 63.92it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.13it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.28it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.39it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.46it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.49it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.53it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.11it/s]
+25-07-21 20:06:13.532 - INFO: <epoch:187, iter:  62,100> l_pix: 2.2421e-03 
+25-07-21 20:06:24.389 - INFO: <epoch:187, iter:  62,200> l_pix: 2.2603e-03 
+25-07-21 20:06:35.210 - INFO: <epoch:188, iter:  62,300> l_pix: 2.0021e-03 
+25-07-21 20:06:46.114 - INFO: <epoch:188, iter:  62,400> l_pix: 2.0575e-03 
+25-07-21 20:06:56.972 - INFO: <epoch:188, iter:  62,500> l_pix: 2.1138e-03 
+25-07-21 20:07:07.826 - INFO: <epoch:188, iter:  62,600> l_pix: 2.0776e-03 
+25-07-21 20:07:18.656 - INFO: <epoch:189, iter:  62,700> l_pix: 1.9289e-03 
+25-07-21 20:07:29.503 - INFO: <epoch:189, iter:  62,800> l_pix: 2.0509e-03 
+25-07-21 20:07:40.348 - INFO: <epoch:189, iter:  62,900> l_pix: 3.4534e-03 
+25-07-21 20:07:51.160 - INFO: <epoch:190, iter:  63,000> l_pix: 2.6015e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.23it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.21it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.95it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.29it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.50it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.63it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.70it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.70it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.75it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.78it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.81it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.49it/s]
+25-07-21 20:08:03.430 - INFO: <epoch:190, iter:  63,100> l_pix: 2.1236e-03 
+25-07-21 20:08:14.282 - INFO: <epoch:190, iter:  63,200> l_pix: 3.0577e-03 
+25-07-21 20:08:25.099 - INFO: <epoch:191, iter:  63,300> l_pix: 2.5861e-03 
+25-07-21 20:08:36.091 - INFO: <epoch:191, iter:  63,400> l_pix: 2.0272e-03 
+25-07-21 20:08:46.945 - INFO: <epoch:191, iter:  63,500> l_pix: 2.0054e-03 
+25-07-21 20:08:57.794 - INFO: <epoch:191, iter:  63,600> l_pix: 3.3258e-03 
+25-07-21 20:09:08.607 - INFO: <epoch:192, iter:  63,700> l_pix: 2.2617e-03 
+25-07-21 20:09:19.455 - INFO: <epoch:192, iter:  63,800> l_pix: 2.4462e-03 
+25-07-21 20:09:30.323 - INFO: <epoch:192, iter:  63,900> l_pix: 3.1678e-03 
+25-07-21 20:09:41.136 - INFO: <epoch:193, iter:  64,000> l_pix: 2.4928e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.06it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.93it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.53it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.88it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.02it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.14it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.22it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.31it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.29it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.35it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.31it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.04it/s]
+25-07-21 20:09:53.449 - INFO: <epoch:193, iter:  64,100> l_pix: 6.3779e-03 
+25-07-21 20:10:04.304 - INFO: <epoch:193, iter:  64,200> l_pix: 2.0902e-03 
+25-07-21 20:10:15.131 - INFO: <epoch:194, iter:  64,300> l_pix: 2.7844e-03 
+25-07-21 20:10:26.008 - INFO: <epoch:194, iter:  64,400> l_pix: 2.4478e-03 
+25-07-21 20:10:36.875 - INFO: <epoch:194, iter:  64,500> l_pix: 2.0435e-03 
+25-07-21 20:10:47.739 - INFO: <epoch:194, iter:  64,600> l_pix: 2.5749e-03 
+25-07-21 20:10:58.686 - INFO: <epoch:195, iter:  64,700> l_pix: 1.6258e-03 
+25-07-21 20:11:09.539 - INFO: <epoch:195, iter:  64,800> l_pix: 1.8261e-03 
+25-07-21 20:11:20.392 - INFO: <epoch:195, iter:  64,900> l_pix: 1.9356e-03 
+25-07-21 20:11:31.206 - INFO: <epoch:196, iter:  65,000> l_pix: 2.2725e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.27it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.22it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.93it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.29it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.47it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.59it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.67it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.73it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.77it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.80it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.82it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.49it/s]
+25-07-21 20:11:43.490 - INFO: <epoch:196, iter:  65,100> l_pix: 2.9405e-03 
+25-07-21 20:11:54.339 - INFO: <epoch:196, iter:  65,200> l_pix: 2.1421e-03 
+25-07-21 20:12:05.154 - INFO: <epoch:197, iter:  65,300> l_pix: 2.7507e-03 
+25-07-21 20:12:16.002 - INFO: <epoch:197, iter:  65,400> l_pix: 2.9585e-03 
+25-07-21 20:12:26.854 - INFO: <epoch:197, iter:  65,500> l_pix: 5.1182e-03 
+25-07-21 20:12:37.708 - INFO: <epoch:197, iter:  65,600> l_pix: 1.9704e-03 
+25-07-21 20:12:48.522 - INFO: <epoch:198, iter:  65,700> l_pix: 2.2153e-03 
+25-07-21 20:12:59.412 - INFO: <epoch:198, iter:  65,800> l_pix: 2.0570e-03 
+25-07-21 20:13:10.260 - INFO: <epoch:198, iter:  65,900> l_pix: 3.7869e-03 
+25-07-21 20:13:21.076 - INFO: <epoch:199, iter:  66,000> l_pix: 5.4327e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.13it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.13it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.79it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.11it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.26it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.39it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.48it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.54it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.58it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.64it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.63it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.30it/s]
+25-07-21 20:13:33.458 - INFO: <epoch:199, iter:  66,100> l_pix: 1.8547e-03 
+25-07-21 20:13:44.303 - INFO: <epoch:199, iter:  66,200> l_pix: 4.1652e-03 
+25-07-21 20:13:55.119 - INFO: <epoch:200, iter:  66,300> l_pix: 3.9455e-03 
+25-07-21 20:14:05.968 - INFO: <epoch:200, iter:  66,400> l_pix: 2.1706e-03 
+25-07-21 20:14:16.816 - INFO: <epoch:200, iter:  66,500> l_pix: 2.2028e-03 
+25-07-21 20:14:27.653 - INFO: <epoch:200, iter:  66,600> l_pix: 2.5256e-03 
+25-07-21 20:14:38.518 - INFO: <epoch:201, iter:  66,700> l_pix: 1.9212e-03 
+25-07-21 20:14:49.369 - INFO: <epoch:201, iter:  66,800> l_pix: 2.0848e-03 
+25-07-21 20:15:00.237 - INFO: <epoch:201, iter:  66,900> l_pix: 4.0124e-03 
+25-07-21 20:15:11.053 - INFO: <epoch:202, iter:  67,000> l_pix: 2.4544e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.78it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.10it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.91it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.30it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.43it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.37it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.32it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.37it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.44it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.47it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.50it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.24it/s]
+25-07-21 20:15:23.325 - INFO: <epoch:202, iter:  67,100> l_pix: 2.9077e-03 
+25-07-21 20:15:34.157 - INFO: <epoch:202, iter:  67,200> l_pix: 5.5682e-03 
+25-07-21 20:15:44.989 - INFO: <epoch:203, iter:  67,300> l_pix: 1.9122e-03 
+25-07-21 20:15:55.927 - INFO: <epoch:203, iter:  67,400> l_pix: 2.2423e-03 
+25-07-21 20:16:06.779 - INFO: <epoch:203, iter:  67,500> l_pix: 2.6244e-03 
+25-07-21 20:16:17.601 - INFO: <epoch:204, iter:  67,600> l_pix: 1.8920e-03 
+25-07-21 20:16:28.453 - INFO: <epoch:204, iter:  67,700> l_pix: 1.9671e-03 
+25-07-21 20:16:39.301 - INFO: <epoch:204, iter:  67,800> l_pix: 2.4049e-03 
+25-07-21 20:16:50.148 - INFO: <epoch:204, iter:  67,900> l_pix: 2.7333e-03 
+25-07-21 20:17:00.989 - INFO: <epoch:205, iter:  68,000> l_pix: 2.5925e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.82it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.98it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.59it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.85it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.03it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.00it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 63.87it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.11it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.24it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.35it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.46it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.03it/s]
+25-07-21 20:17:13.293 - INFO: <epoch:205, iter:  68,100> l_pix: 2.5332e-03 
+25-07-21 20:17:24.152 - INFO: <epoch:205, iter:  68,200> l_pix: 2.1015e-03 
+25-07-21 20:17:34.984 - INFO: <epoch:206, iter:  68,300> l_pix: 4.4650e-03 
+25-07-21 20:17:45.844 - INFO: <epoch:206, iter:  68,400> l_pix: 2.2357e-03 
+25-07-21 20:17:56.703 - INFO: <epoch:206, iter:  68,500> l_pix: 5.0294e-03 
+25-07-21 20:18:07.534 - INFO: <epoch:207, iter:  68,600> l_pix: 2.0388e-03 
+25-07-21 20:18:18.471 - INFO: <epoch:207, iter:  68,700> l_pix: 2.8704e-03 
+25-07-21 20:18:29.304 - INFO: <epoch:207, iter:  68,800> l_pix: 2.6363e-03 
+25-07-21 20:18:40.190 - INFO: <epoch:207, iter:  68,900> l_pix: 2.0758e-03 
+25-07-21 20:18:51.018 - INFO: <epoch:208, iter:  69,000> l_pix: 1.8670e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.31it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.38it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 64.04it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.35it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.46it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.55it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.65it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.71it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.72it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.74it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.75it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.47it/s]
+25-07-21 20:19:03.290 - INFO: <epoch:208, iter:  69,100> l_pix: 2.0989e-03 
+25-07-21 20:19:14.140 - INFO: <epoch:208, iter:  69,200> l_pix: 4.0809e-03 
+25-07-21 20:19:24.956 - INFO: <epoch:209, iter:  69,300> l_pix: 2.6604e-03 
+25-07-21 20:19:35.818 - INFO: <epoch:209, iter:  69,400> l_pix: 2.4881e-03 
+25-07-21 20:19:46.663 - INFO: <epoch:209, iter:  69,500> l_pix: 7.4674e-03 
+25-07-21 20:19:57.481 - INFO: <epoch:210, iter:  69,600> l_pix: 2.5707e-03 
+25-07-21 20:20:08.395 - INFO: <epoch:210, iter:  69,700> l_pix: 2.0706e-03 
+25-07-21 20:20:19.252 - INFO: <epoch:210, iter:  69,800> l_pix: 6.2164e-03 
+25-07-21 20:20:30.144 - INFO: <epoch:210, iter:  69,900> l_pix: 2.2431e-03 
+25-07-21 20:20:41.039 - INFO: <epoch:211, iter:  70,000> l_pix: 2.3099e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.12it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.10it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.82it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.17it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.35it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.45it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.51it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.57it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.63it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.64it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.66it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.35it/s]
+25-07-21 20:20:42.483 - INFO: Saving models and training states.
+25-07-21 20:20:43.704 - INFO: Saved model in [experiments/hardi150_250721_181149/checkpoint/latest_gen.pth] ...
+25-07-21 20:20:54.624 - INFO: <epoch:211, iter:  70,100> l_pix: 2.5411e-03 
+25-07-21 20:21:05.502 - INFO: <epoch:211, iter:  70,200> l_pix: 2.4316e-03 
+25-07-21 20:21:16.349 - INFO: <epoch:212, iter:  70,300> l_pix: 1.8761e-03 
+25-07-21 20:21:27.262 - INFO: <epoch:212, iter:  70,400> l_pix: 3.1543e-03 
+25-07-21 20:21:38.144 - INFO: <epoch:212, iter:  70,500> l_pix: 2.0289e-03 
+25-07-21 20:21:48.988 - INFO: <epoch:213, iter:  70,600> l_pix: 3.9987e-03 
+25-07-21 20:21:59.874 - INFO: <epoch:213, iter:  70,700> l_pix: 2.6165e-03 
+25-07-21 20:22:10.750 - INFO: <epoch:213, iter:  70,800> l_pix: 2.0962e-03 
+25-07-21 20:22:21.623 - INFO: <epoch:213, iter:  70,900> l_pix: 2.4598e-03 
+25-07-21 20:22:32.455 - INFO: <epoch:214, iter:  71,000> l_pix: 5.3357e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.24it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.38it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 64.14it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.52it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.68it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.81it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.90it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.97it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 65.01it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 65.03it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 65.03it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.70it/s]
+25-07-21 20:22:44.780 - INFO: <epoch:214, iter:  71,100> l_pix: 1.7604e-03 
+25-07-21 20:22:55.723 - INFO: <epoch:214, iter:  71,200> l_pix: 5.6101e-03 
+25-07-21 20:23:06.543 - INFO: <epoch:215, iter:  71,300> l_pix: 1.7890e-03 
+25-07-21 20:23:17.462 - INFO: <epoch:215, iter:  71,400> l_pix: 2.5623e-03 
+25-07-21 20:23:28.318 - INFO: <epoch:215, iter:  71,500> l_pix: 2.7747e-03 
+25-07-21 20:23:39.146 - INFO: <epoch:216, iter:  71,600> l_pix: 2.1799e-03 
+25-07-21 20:23:50.017 - INFO: <epoch:216, iter:  71,700> l_pix: 2.5801e-03 
+25-07-21 20:24:00.887 - INFO: <epoch:216, iter:  71,800> l_pix: 1.5896e-03 
+25-07-21 20:24:11.747 - INFO: <epoch:216, iter:  71,900> l_pix: 2.3840e-03 
+25-07-21 20:24:22.571 - INFO: <epoch:217, iter:  72,000> l_pix: 7.7512e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.19it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.18it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.85it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.20it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.38it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.47it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.58it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.65it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.68it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.68it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.64it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.37it/s]
+25-07-21 20:24:34.867 - INFO: <epoch:217, iter:  72,100> l_pix: 2.2028e-03 
+25-07-21 20:24:45.707 - INFO: <epoch:217, iter:  72,200> l_pix: 1.9487e-03 
+25-07-21 20:24:56.513 - INFO: <epoch:218, iter:  72,300> l_pix: 3.5771e-03 
+25-07-21 20:25:07.353 - INFO: <epoch:218, iter:  72,400> l_pix: 2.6457e-03 
+25-07-21 20:25:18.278 - INFO: <epoch:218, iter:  72,500> l_pix: 1.7699e-03 
+25-07-21 20:25:29.087 - INFO: <epoch:219, iter:  72,600> l_pix: 5.5881e-03 
+25-07-21 20:25:39.927 - INFO: <epoch:219, iter:  72,700> l_pix: 2.8155e-03 
+25-07-21 20:25:50.772 - INFO: <epoch:219, iter:  72,800> l_pix: 3.0211e-03 
+25-07-21 20:26:01.672 - INFO: <epoch:219, iter:  72,900> l_pix: 4.1482e-03 
+25-07-21 20:26:12.477 - INFO: <epoch:220, iter:  73,000> l_pix: 2.1958e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.46it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.38it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 64.00it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.36it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.52it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.63it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.69it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.74it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.76it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.73it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.75it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.48it/s]
+25-07-21 20:26:24.768 - INFO: <epoch:220, iter:  73,100> l_pix: 2.3419e-03 
+25-07-21 20:26:35.608 - INFO: <epoch:220, iter:  73,200> l_pix: 1.9846e-03 
+25-07-21 20:26:46.412 - INFO: <epoch:221, iter:  73,300> l_pix: 1.9607e-03 
+25-07-21 20:26:57.247 - INFO: <epoch:221, iter:  73,400> l_pix: 2.2892e-03 
+25-07-21 20:27:08.084 - INFO: <epoch:221, iter:  73,500> l_pix: 1.8287e-03 
+25-07-21 20:27:18.886 - INFO: <epoch:222, iter:  73,600> l_pix: 1.7669e-03 
+25-07-21 20:27:29.740 - INFO: <epoch:222, iter:  73,700> l_pix: 2.4338e-03 
+25-07-21 20:27:40.710 - INFO: <epoch:222, iter:  73,800> l_pix: 6.6146e-03 
+25-07-21 20:27:51.553 - INFO: <epoch:222, iter:  73,900> l_pix: 3.5958e-03 
+25-07-21 20:28:02.369 - INFO: <epoch:223, iter:  74,000> l_pix: 2.0391e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.37it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.21it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.87it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.26it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.37it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.46it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.52it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.58it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.62it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.60it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.66it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.37it/s]
+25-07-21 20:28:14.654 - INFO: <epoch:223, iter:  74,100> l_pix: 2.5959e-03 
+25-07-21 20:28:25.491 - INFO: <epoch:223, iter:  74,200> l_pix: 2.1393e-03 
+25-07-21 20:28:36.294 - INFO: <epoch:224, iter:  74,300> l_pix: 4.5016e-03 
+25-07-21 20:28:47.137 - INFO: <epoch:224, iter:  74,400> l_pix: 5.8924e-03 
+25-07-21 20:28:57.983 - INFO: <epoch:224, iter:  74,500> l_pix: 2.0702e-03 
+25-07-21 20:29:08.792 - INFO: <epoch:225, iter:  74,600> l_pix: 3.2234e-03 
+25-07-21 20:29:19.634 - INFO: <epoch:225, iter:  74,700> l_pix: 2.5447e-03 
+25-07-21 20:29:30.482 - INFO: <epoch:225, iter:  74,800> l_pix: 2.0704e-03 
+25-07-21 20:29:41.326 - INFO: <epoch:225, iter:  74,900> l_pix: 2.2952e-03 
+25-07-21 20:29:52.131 - INFO: <epoch:226, iter:  75,000> l_pix: 2.6739e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.22it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.27it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 64.02it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.32it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.51it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.66it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.72it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.75it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.80it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.83it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.86it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.53it/s]
+25-07-21 20:30:04.484 - INFO: <epoch:226, iter:  75,100> l_pix: 7.9951e-03 
+25-07-21 20:30:15.354 - INFO: <epoch:226, iter:  75,200> l_pix: 2.1014e-03 
+25-07-21 20:30:26.210 - INFO: <epoch:227, iter:  75,300> l_pix: 4.3059e-03 
+25-07-21 20:30:37.037 - INFO: <epoch:227, iter:  75,400> l_pix: 1.8653e-03 
+25-07-21 20:30:47.866 - INFO: <epoch:227, iter:  75,500> l_pix: 7.5726e-03 
+25-07-21 20:30:58.659 - INFO: <epoch:228, iter:  75,600> l_pix: 2.5631e-03 
+25-07-21 20:31:09.487 - INFO: <epoch:228, iter:  75,700> l_pix: 2.2119e-03 
+25-07-21 20:31:20.319 - INFO: <epoch:228, iter:  75,800> l_pix: 1.8897e-03 
+25-07-21 20:31:31.155 - INFO: <epoch:228, iter:  75,900> l_pix: 6.0460e-03 
+25-07-21 20:31:42.001 - INFO: <epoch:229, iter:  76,000> l_pix: 5.7494e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.26it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.14it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.82it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.09it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.19it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.21it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.28it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.38it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.46it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.44it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.43it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.18it/s]
+25-07-21 20:31:54.339 - INFO: <epoch:229, iter:  76,100> l_pix: 1.9186e-03 
+25-07-21 20:32:05.238 - INFO: <epoch:229, iter:  76,200> l_pix: 2.1192e-03 
+25-07-21 20:32:16.097 - INFO: <epoch:230, iter:  76,300> l_pix: 2.2975e-03 
+25-07-21 20:32:27.049 - INFO: <epoch:230, iter:  76,400> l_pix: 1.7886e-03 
+25-07-21 20:32:37.913 - INFO: <epoch:230, iter:  76,500> l_pix: 4.1607e-03 
+25-07-21 20:32:48.747 - INFO: <epoch:231, iter:  76,600> l_pix: 6.1675e-03 
+25-07-21 20:32:59.678 - INFO: <epoch:231, iter:  76,700> l_pix: 2.1916e-03 
+25-07-21 20:33:10.550 - INFO: <epoch:231, iter:  76,800> l_pix: 2.0669e-03 
+25-07-21 20:33:21.417 - INFO: <epoch:231, iter:  76,900> l_pix: 2.0553e-03 
+25-07-21 20:33:32.260 - INFO: <epoch:232, iter:  77,000> l_pix: 3.0122e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.23it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.08it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.70it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.03it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.18it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.29it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.37it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.40it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.44it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.46it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.47it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.19it/s]
+25-07-21 20:33:44.563 - INFO: <epoch:232, iter:  77,100> l_pix: 6.3823e-03 
+25-07-21 20:33:55.422 - INFO: <epoch:232, iter:  77,200> l_pix: 2.0575e-03 
+25-07-21 20:34:06.243 - INFO: <epoch:233, iter:  77,300> l_pix: 2.0205e-03 
+25-07-21 20:34:17.104 - INFO: <epoch:233, iter:  77,400> l_pix: 1.9838e-03 
+25-07-21 20:34:27.963 - INFO: <epoch:233, iter:  77,500> l_pix: 2.1782e-03 
+25-07-21 20:34:38.908 - INFO: <epoch:234, iter:  77,600> l_pix: 2.6719e-03 
+25-07-21 20:34:49.826 - INFO: <epoch:234, iter:  77,700> l_pix: 2.1722e-03 
+25-07-21 20:35:00.785 - INFO: <epoch:234, iter:  77,800> l_pix: 3.1155e-03 
+25-07-21 20:35:11.729 - INFO: <epoch:234, iter:  77,900> l_pix: 3.5292e-03 
+25-07-21 20:35:22.576 - INFO: <epoch:235, iter:  78,000> l_pix: 2.1019e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   7%|▋         | 6/81 [00:00<00:01, 59.96it/s]sampling loop time step:  16%|█▌        | 13/81 [00:00<00:01, 62.55it/s]sampling loop time step:  25%|██▍       | 20/81 [00:00<00:00, 63.43it/s]sampling loop time step:  33%|███▎      | 27/81 [00:00<00:00, 63.81it/s]sampling loop time step:  42%|████▏     | 34/81 [00:00<00:00, 64.00it/s]sampling loop time step:  51%|█████     | 41/81 [00:00<00:00, 64.13it/s]sampling loop time step:  59%|█████▉    | 48/81 [00:00<00:00, 64.19it/s]sampling loop time step:  68%|██████▊   | 55/81 [00:00<00:00, 64.24it/s]sampling loop time step:  77%|███████▋  | 62/81 [00:00<00:00, 64.30it/s]sampling loop time step:  85%|████████▌ | 69/81 [00:01<00:00, 64.29it/s]sampling loop time step:  94%|█████████▍| 76/81 [00:01<00:00, 64.33it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.00it/s]
+25-07-21 20:35:34.891 - INFO: <epoch:235, iter:  78,100> l_pix: 1.7906e-03 
+25-07-21 20:35:45.746 - INFO: <epoch:235, iter:  78,200> l_pix: 2.0334e-03 
+25-07-21 20:35:56.566 - INFO: <epoch:236, iter:  78,300> l_pix: 1.8112e-03 
+25-07-21 20:36:07.421 - INFO: <epoch:236, iter:  78,400> l_pix: 2.4241e-03 
+25-07-21 20:36:18.277 - INFO: <epoch:236, iter:  78,500> l_pix: 1.9797e-03 
+25-07-21 20:36:29.099 - INFO: <epoch:237, iter:  78,600> l_pix: 5.3944e-03 
+25-07-21 20:36:39.955 - INFO: <epoch:237, iter:  78,700> l_pix: 1.4980e-03 
+25-07-21 20:36:50.808 - INFO: <epoch:237, iter:  78,800> l_pix: 2.0710e-03 
+25-07-21 20:37:01.660 - INFO: <epoch:237, iter:  78,900> l_pix: 2.1442e-03 
+25-07-21 20:37:12.478 - INFO: <epoch:238, iter:  79,000> l_pix: 2.1179e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   7%|▋         | 6/81 [00:00<00:01, 59.85it/s]sampling loop time step:  16%|█▌        | 13/81 [00:00<00:01, 62.40it/s]sampling loop time step:  25%|██▍       | 20/81 [00:00<00:00, 63.26it/s]sampling loop time step:  33%|███▎      | 27/81 [00:00<00:00, 63.62it/s]sampling loop time step:  42%|████▏     | 34/81 [00:00<00:00, 63.78it/s]sampling loop time step:  51%|█████     | 41/81 [00:00<00:00, 63.94it/s]sampling loop time step:  59%|█████▉    | 48/81 [00:00<00:00, 64.01it/s]sampling loop time step:  68%|██████▊   | 55/81 [00:00<00:00, 64.08it/s]sampling loop time step:  77%|███████▋  | 62/81 [00:00<00:00, 64.09it/s]sampling loop time step:  85%|████████▌ | 69/81 [00:01<00:00, 64.13it/s]sampling loop time step:  94%|█████████▍| 76/81 [00:01<00:00, 64.17it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 63.82it/s]
+25-07-21 20:37:24.862 - INFO: <epoch:238, iter:  79,100> l_pix: 2.1245e-03 
+25-07-21 20:37:35.709 - INFO: <epoch:238, iter:  79,200> l_pix: 3.5239e-03 
+25-07-21 20:37:46.519 - INFO: <epoch:239, iter:  79,300> l_pix: 4.6994e-03 
+25-07-21 20:37:57.358 - INFO: <epoch:239, iter:  79,400> l_pix: 4.6857e-03 
+25-07-21 20:38:08.197 - INFO: <epoch:239, iter:  79,500> l_pix: 1.6921e-03 
+25-07-21 20:38:19.011 - INFO: <epoch:240, iter:  79,600> l_pix: 2.1064e-03 
+25-07-21 20:38:29.854 - INFO: <epoch:240, iter:  79,700> l_pix: 1.8371e-03 
+25-07-21 20:38:40.691 - INFO: <epoch:240, iter:  79,800> l_pix: 3.6907e-03 
+25-07-21 20:38:51.547 - INFO: <epoch:240, iter:  79,900> l_pix: 4.1433e-03 
+25-07-21 20:39:02.366 - INFO: <epoch:241, iter:  80,000> l_pix: 2.1576e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   7%|▋         | 6/81 [00:00<00:01, 59.89it/s]sampling loop time step:  16%|█▌        | 13/81 [00:00<00:01, 62.65it/s]sampling loop time step:  25%|██▍       | 20/81 [00:00<00:00, 63.50it/s]sampling loop time step:  33%|███▎      | 27/81 [00:00<00:00, 63.92it/s]sampling loop time step:  42%|████▏     | 34/81 [00:00<00:00, 64.11it/s]sampling loop time step:  51%|█████     | 41/81 [00:00<00:00, 64.24it/s]sampling loop time step:  59%|█████▉    | 48/81 [00:00<00:00, 64.33it/s]sampling loop time step:  68%|██████▊   | 55/81 [00:00<00:00, 64.36it/s]sampling loop time step:  77%|███████▋  | 62/81 [00:00<00:00, 64.42it/s]sampling loop time step:  85%|████████▌ | 69/81 [00:01<00:00, 64.42it/s]sampling loop time step:  94%|█████████▍| 76/81 [00:01<00:00, 64.40it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.10it/s]
+25-07-21 20:39:03.837 - INFO: Saving models and training states.
+25-07-21 20:39:04.994 - INFO: Saved model in [experiments/hardi150_250721_181149/checkpoint/latest_gen.pth] ...
+25-07-21 20:39:15.853 - INFO: <epoch:241, iter:  80,100> l_pix: 2.7438e-03 
+25-07-21 20:39:26.723 - INFO: <epoch:241, iter:  80,200> l_pix: 1.8561e-03 
+25-07-21 20:39:37.648 - INFO: <epoch:242, iter:  80,300> l_pix: 4.8783e-03 
+25-07-21 20:39:48.504 - INFO: <epoch:242, iter:  80,400> l_pix: 2.2975e-03 
+25-07-21 20:39:59.355 - INFO: <epoch:242, iter:  80,500> l_pix: 3.8876e-03 
+25-07-21 20:40:10.184 - INFO: <epoch:243, iter:  80,600> l_pix: 2.3630e-03 
+25-07-21 20:40:21.037 - INFO: <epoch:243, iter:  80,700> l_pix: 3.1184e-03 
+25-07-21 20:40:31.889 - INFO: <epoch:243, iter:  80,800> l_pix: 4.8732e-03 
+25-07-21 20:40:42.745 - INFO: <epoch:243, iter:  80,900> l_pix: 1.8598e-03 
+25-07-21 20:40:53.560 - INFO: <epoch:244, iter:  81,000> l_pix: 2.0657e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.53it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.74it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.57it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.92it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.12it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.23it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.16it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.28it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.37it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.40it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.44it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.09it/s]
+25-07-21 20:41:05.869 - INFO: <epoch:244, iter:  81,100> l_pix: 2.8016e-03 
+25-07-21 20:41:16.724 - INFO: <epoch:244, iter:  81,200> l_pix: 3.8758e-03 
+25-07-21 20:41:27.540 - INFO: <epoch:245, iter:  81,300> l_pix: 2.3854e-03 
+25-07-21 20:41:38.387 - INFO: <epoch:245, iter:  81,400> l_pix: 2.0183e-03 
+25-07-21 20:41:49.238 - INFO: <epoch:245, iter:  81,500> l_pix: 3.3300e-03 
+25-07-21 20:42:00.134 - INFO: <epoch:246, iter:  81,600> l_pix: 2.1456e-03 
+25-07-21 20:42:10.983 - INFO: <epoch:246, iter:  81,700> l_pix: 2.2372e-03 
+25-07-21 20:42:21.840 - INFO: <epoch:246, iter:  81,800> l_pix: 1.9953e-03 
+25-07-21 20:42:32.795 - INFO: <epoch:246, iter:  81,900> l_pix: 4.0945e-03 
+25-07-21 20:42:43.625 - INFO: <epoch:247, iter:  82,000> l_pix: 2.1919e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.49it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.69it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.45it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.83it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.05it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.13it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.24it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.27it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.31it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.33it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.34it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.02it/s]
+25-07-21 20:42:55.969 - INFO: <epoch:247, iter:  82,100> l_pix: 3.8832e-03 
+25-07-21 20:43:06.820 - INFO: <epoch:247, iter:  82,200> l_pix: 2.6440e-03 
+25-07-21 20:43:17.638 - INFO: <epoch:248, iter:  82,300> l_pix: 1.9853e-03 
+25-07-21 20:43:28.502 - INFO: <epoch:248, iter:  82,400> l_pix: 5.0041e-03 
+25-07-21 20:43:39.367 - INFO: <epoch:248, iter:  82,500> l_pix: 5.6258e-03 
+25-07-21 20:43:50.185 - INFO: <epoch:249, iter:  82,600> l_pix: 2.2857e-03 
+25-07-21 20:44:01.044 - INFO: <epoch:249, iter:  82,700> l_pix: 7.0675e-03 
+25-07-21 20:44:11.906 - INFO: <epoch:249, iter:  82,800> l_pix: 3.0060e-03 
+25-07-21 20:44:22.846 - INFO: <epoch:249, iter:  82,900> l_pix: 1.6966e-03 
+25-07-21 20:44:33.673 - INFO: <epoch:250, iter:  83,000> l_pix: 3.6312e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   7%|▋         | 6/81 [00:00<00:01, 59.64it/s]sampling loop time step:  16%|█▌        | 13/81 [00:00<00:01, 62.38it/s]sampling loop time step:  25%|██▍       | 20/81 [00:00<00:00, 63.22it/s]sampling loop time step:  33%|███▎      | 27/81 [00:00<00:00, 63.61it/s]sampling loop time step:  42%|████▏     | 34/81 [00:00<00:00, 63.83it/s]sampling loop time step:  51%|█████     | 41/81 [00:00<00:00, 63.96it/s]sampling loop time step:  59%|█████▉    | 48/81 [00:00<00:00, 64.06it/s]sampling loop time step:  68%|██████▊   | 55/81 [00:00<00:00, 64.12it/s]sampling loop time step:  77%|███████▋  | 62/81 [00:00<00:00, 64.18it/s]sampling loop time step:  85%|████████▌ | 69/81 [00:01<00:00, 64.19it/s]sampling loop time step:  94%|█████████▍| 76/81 [00:01<00:00, 64.19it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 63.85it/s]
+25-07-21 20:44:45.982 - INFO: <epoch:250, iter:  83,100> l_pix: 4.6371e-03 
+25-07-21 20:44:56.827 - INFO: <epoch:250, iter:  83,200> l_pix: 2.5802e-03 
+25-07-21 20:45:07.651 - INFO: <epoch:251, iter:  83,300> l_pix: 2.6024e-03 
+25-07-21 20:45:18.496 - INFO: <epoch:251, iter:  83,400> l_pix: 1.9683e-03 
+25-07-21 20:45:29.347 - INFO: <epoch:251, iter:  83,500> l_pix: 1.9609e-03 
+25-07-21 20:45:40.167 - INFO: <epoch:252, iter:  83,600> l_pix: 2.9058e-03 
+25-07-21 20:45:51.014 - INFO: <epoch:252, iter:  83,700> l_pix: 6.0376e-03 
+25-07-21 20:46:01.862 - INFO: <epoch:252, iter:  83,800> l_pix: 1.7668e-03 
+25-07-21 20:46:12.710 - INFO: <epoch:252, iter:  83,900> l_pix: 2.0852e-03 
+25-07-21 20:46:23.528 - INFO: <epoch:253, iter:  84,000> l_pix: 1.9753e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 60.83it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.72it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.35it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.63it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 63.80it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 63.89it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 63.96it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 63.99it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 63.99it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.01it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.03it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 63.77it/s]
+25-07-21 20:46:35.900 - INFO: <epoch:253, iter:  84,100> l_pix: 1.6502e-03 
+25-07-21 20:46:46.886 - INFO: <epoch:253, iter:  84,200> l_pix: 4.0864e-03 
+25-07-21 20:46:57.767 - INFO: <epoch:254, iter:  84,300> l_pix: 2.0397e-03 
+25-07-21 20:47:08.631 - INFO: <epoch:254, iter:  84,400> l_pix: 2.0321e-03 
+25-07-21 20:47:19.493 - INFO: <epoch:254, iter:  84,500> l_pix: 2.2200e-03 
+25-07-21 20:47:30.324 - INFO: <epoch:255, iter:  84,600> l_pix: 4.6865e-03 
+25-07-21 20:47:41.190 - INFO: <epoch:255, iter:  84,700> l_pix: 2.3121e-03 
+25-07-21 20:47:52.056 - INFO: <epoch:255, iter:  84,800> l_pix: 3.6567e-03 
+25-07-21 20:48:02.962 - INFO: <epoch:255, iter:  84,900> l_pix: 2.3049e-03 
+25-07-21 20:48:13.805 - INFO: <epoch:256, iter:  85,000> l_pix: 2.6117e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.32it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.36it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 64.02it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.33it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.54it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.58it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.64it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.71it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.76it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.77it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.79it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.49it/s]
+25-07-21 20:48:26.131 - INFO: <epoch:256, iter:  85,100> l_pix: 2.2340e-03 
+25-07-21 20:48:37.023 - INFO: <epoch:256, iter:  85,200> l_pix: 2.1011e-03 
+25-07-21 20:48:47.841 - INFO: <epoch:257, iter:  85,300> l_pix: 2.3740e-03 
+25-07-21 20:48:58.686 - INFO: <epoch:257, iter:  85,400> l_pix: 3.9561e-03 
+25-07-21 20:49:09.611 - INFO: <epoch:257, iter:  85,500> l_pix: 1.9413e-03 
+25-07-21 20:49:20.422 - INFO: <epoch:258, iter:  85,600> l_pix: 2.5044e-03 
+25-07-21 20:49:31.270 - INFO: <epoch:258, iter:  85,700> l_pix: 4.5574e-03 
+25-07-21 20:49:42.120 - INFO: <epoch:258, iter:  85,800> l_pix: 1.6596e-03 
+25-07-21 20:49:52.962 - INFO: <epoch:258, iter:  85,900> l_pix: 4.7249e-03 
+25-07-21 20:50:03.783 - INFO: <epoch:259, iter:  86,000> l_pix: 3.0721e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.14it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.05it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.75it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.08it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.26it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.34it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.42it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.49it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.53it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.56it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.54it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.25it/s]
+25-07-21 20:50:16.108 - INFO: <epoch:259, iter:  86,100> l_pix: 2.3069e-03 
+25-07-21 20:50:26.972 - INFO: <epoch:259, iter:  86,200> l_pix: 2.5732e-03 
+25-07-21 20:50:37.802 - INFO: <epoch:260, iter:  86,300> l_pix: 3.2267e-03 
+25-07-21 20:50:48.722 - INFO: <epoch:260, iter:  86,400> l_pix: 1.8334e-03 
+25-07-21 20:50:59.584 - INFO: <epoch:260, iter:  86,500> l_pix: 3.3559e-03 
+25-07-21 20:51:10.405 - INFO: <epoch:261, iter:  86,600> l_pix: 2.6675e-03 
+25-07-21 20:51:21.264 - INFO: <epoch:261, iter:  86,700> l_pix: 1.6671e-03 
+25-07-21 20:51:32.218 - INFO: <epoch:261, iter:  86,800> l_pix: 2.1763e-03 
+25-07-21 20:51:43.078 - INFO: <epoch:261, iter:  86,900> l_pix: 5.1956e-03 
+25-07-21 20:51:53.949 - INFO: <epoch:262, iter:  87,000> l_pix: 1.9283e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.17it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.21it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.91it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.26it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.44it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.55it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.64it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.68it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.74it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.73it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.74it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.44it/s]
+25-07-21 20:52:06.234 - INFO: <epoch:262, iter:  87,100> l_pix: 3.2038e-03 
+25-07-21 20:52:17.074 - INFO: <epoch:262, iter:  87,200> l_pix: 1.9511e-03 
+25-07-21 20:52:27.882 - INFO: <epoch:263, iter:  87,300> l_pix: 1.9567e-03 
+25-07-21 20:52:38.728 - INFO: <epoch:263, iter:  87,400> l_pix: 2.1351e-03 
+25-07-21 20:52:49.570 - INFO: <epoch:263, iter:  87,500> l_pix: 3.7653e-03 
+25-07-21 20:53:00.372 - INFO: <epoch:264, iter:  87,600> l_pix: 5.7538e-03 
+25-07-21 20:53:11.210 - INFO: <epoch:264, iter:  87,700> l_pix: 1.8773e-03 
+25-07-21 20:53:22.049 - INFO: <epoch:264, iter:  87,800> l_pix: 4.3893e-03 
+25-07-21 20:53:32.928 - INFO: <epoch:264, iter:  87,900> l_pix: 8.4127e-03 
+25-07-21 20:53:43.728 - INFO: <epoch:265, iter:  88,000> l_pix: 5.6764e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.01it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.03it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.72it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.95it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.06it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.13it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.20it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.30it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.32it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.31it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.34it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.06it/s]
+25-07-21 20:53:56.009 - INFO: <epoch:265, iter:  88,100> l_pix: 2.2429e-03 
+25-07-21 20:54:06.945 - INFO: <epoch:265, iter:  88,200> l_pix: 3.0046e-03 
+25-07-21 20:54:17.844 - INFO: <epoch:266, iter:  88,300> l_pix: 2.4976e-03 
+25-07-21 20:54:28.756 - INFO: <epoch:266, iter:  88,400> l_pix: 1.9479e-03 
+25-07-21 20:54:39.619 - INFO: <epoch:266, iter:  88,500> l_pix: 2.7030e-03 
+25-07-21 20:54:50.450 - INFO: <epoch:267, iter:  88,600> l_pix: 2.0244e-03 
+25-07-21 20:55:01.309 - INFO: <epoch:267, iter:  88,700> l_pix: 4.6645e-03 
+25-07-21 20:55:12.163 - INFO: <epoch:267, iter:  88,800> l_pix: 4.3765e-03 
+25-07-21 20:55:23.021 - INFO: <epoch:267, iter:  88,900> l_pix: 3.7391e-03 
+25-07-21 20:55:33.875 - INFO: <epoch:268, iter:  89,000> l_pix: 2.1939e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.50it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.41it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 64.14it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.48it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.66it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.82it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.87it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.89it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.94it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.93it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.98it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.67it/s]
+25-07-21 20:55:46.136 - INFO: <epoch:268, iter:  89,100> l_pix: 2.1272e-03 
+25-07-21 20:55:56.972 - INFO: <epoch:268, iter:  89,200> l_pix: 2.4263e-03 
+25-07-21 20:56:07.776 - INFO: <epoch:269, iter:  89,300> l_pix: 2.5625e-03 
+25-07-21 20:56:18.612 - INFO: <epoch:269, iter:  89,400> l_pix: 2.2540e-03 
+25-07-21 20:56:29.528 - INFO: <epoch:269, iter:  89,500> l_pix: 2.1966e-03 
+25-07-21 20:56:40.334 - INFO: <epoch:270, iter:  89,600> l_pix: 2.3417e-03 
+25-07-21 20:56:51.168 - INFO: <epoch:270, iter:  89,700> l_pix: 2.1967e-03 
+25-07-21 20:57:01.993 - INFO: <epoch:270, iter:  89,800> l_pix: 1.9742e-03 
+25-07-21 20:57:12.821 - INFO: <epoch:270, iter:  89,900> l_pix: 1.8930e-03 
+25-07-21 20:57:23.612 - INFO: <epoch:271, iter:  90,000> l_pix: 3.5084e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.09it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.17it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.90it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.24it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.44it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.53it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.59it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.65it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.69it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.72it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.73it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.42it/s]
+25-07-21 20:57:25.083 - INFO: Saving models and training states.
+25-07-21 20:57:26.053 - INFO: Saved model in [experiments/hardi150_250721_181149/checkpoint/latest_gen.pth] ...
+25-07-21 20:57:37.034 - INFO: <epoch:271, iter:  90,100> l_pix: 5.7414e-03 
+25-07-21 20:57:47.914 - INFO: <epoch:271, iter:  90,200> l_pix: 4.5042e-03 
+25-07-21 20:57:58.764 - INFO: <epoch:272, iter:  90,300> l_pix: 2.1209e-03 
+25-07-21 20:58:09.646 - INFO: <epoch:272, iter:  90,400> l_pix: 2.5741e-03 
+25-07-21 20:58:20.575 - INFO: <epoch:272, iter:  90,500> l_pix: 3.2523e-03 
+25-07-21 20:58:31.419 - INFO: <epoch:273, iter:  90,600> l_pix: 1.9085e-03 
+25-07-21 20:58:42.416 - INFO: <epoch:273, iter:  90,700> l_pix: 1.9942e-03 
+25-07-21 20:58:53.289 - INFO: <epoch:273, iter:  90,800> l_pix: 2.1072e-03 
+25-07-21 20:59:04.162 - INFO: <epoch:273, iter:  90,900> l_pix: 2.6335e-03 
+25-07-21 20:59:15.003 - INFO: <epoch:274, iter:  91,000> l_pix: 6.9319e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.15it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.99it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.62it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.86it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.05it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.24it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.30it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.35it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.40it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.44it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.42it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.12it/s]
+25-07-21 20:59:27.316 - INFO: <epoch:274, iter:  91,100> l_pix: 1.9209e-03 
+25-07-21 20:59:38.169 - INFO: <epoch:274, iter:  91,200> l_pix: 1.7955e-03 
+25-07-21 20:59:48.989 - INFO: <epoch:275, iter:  91,300> l_pix: 2.0260e-03 
+25-07-21 20:59:59.843 - INFO: <epoch:275, iter:  91,400> l_pix: 2.2786e-03 
+25-07-21 21:00:10.697 - INFO: <epoch:275, iter:  91,500> l_pix: 2.1405e-03 
+25-07-21 21:00:21.520 - INFO: <epoch:276, iter:  91,600> l_pix: 2.0239e-03 
+25-07-21 21:00:32.372 - INFO: <epoch:276, iter:  91,700> l_pix: 2.0865e-03 
+25-07-21 21:00:43.224 - INFO: <epoch:276, iter:  91,800> l_pix: 3.3802e-03 
+25-07-21 21:00:54.071 - INFO: <epoch:276, iter:  91,900> l_pix: 1.8910e-03 
+25-07-21 21:01:04.968 - INFO: <epoch:277, iter:  92,000> l_pix: 1.7669e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.47it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.38it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 64.04it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.36it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.53it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.64it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.72it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.76it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.78it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.81it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.83it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.53it/s]
+25-07-21 21:01:17.398 - INFO: <epoch:277, iter:  92,100> l_pix: 3.2839e-03 
+25-07-21 21:01:28.268 - INFO: <epoch:277, iter:  92,200> l_pix: 1.9698e-03 
+25-07-21 21:01:39.096 - INFO: <epoch:278, iter:  92,300> l_pix: 1.8880e-03 
+25-07-21 21:01:49.957 - INFO: <epoch:278, iter:  92,400> l_pix: 4.4364e-03 
+25-07-21 21:02:00.858 - INFO: <epoch:278, iter:  92,500> l_pix: 2.7719e-03 
+25-07-21 21:02:11.685 - INFO: <epoch:279, iter:  92,600> l_pix: 4.6318e-03 
+25-07-21 21:02:22.540 - INFO: <epoch:279, iter:  92,700> l_pix: 5.2903e-03 
+25-07-21 21:02:33.398 - INFO: <epoch:279, iter:  92,800> l_pix: 2.1251e-03 
+25-07-21 21:02:44.264 - INFO: <epoch:279, iter:  92,900> l_pix: 2.1912e-03 
+25-07-21 21:02:55.091 - INFO: <epoch:280, iter:  93,000> l_pix: 1.9170e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.19it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.18it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.91it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.22it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.41it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.53it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.60it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.67it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.72it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.72it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.73it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.43it/s]
+25-07-21 21:03:07.483 - INFO: <epoch:280, iter:  93,100> l_pix: 1.9227e-03 
+25-07-21 21:03:18.333 - INFO: <epoch:280, iter:  93,200> l_pix: 2.1867e-03 
+25-07-21 21:03:29.229 - INFO: <epoch:281, iter:  93,300> l_pix: 2.0686e-03 
+25-07-21 21:03:40.075 - INFO: <epoch:281, iter:  93,400> l_pix: 2.0840e-03 
+25-07-21 21:03:50.931 - INFO: <epoch:281, iter:  93,500> l_pix: 1.7234e-03 
+25-07-21 21:04:01.744 - INFO: <epoch:282, iter:  93,600> l_pix: 1.9925e-03 
+25-07-21 21:04:12.597 - INFO: <epoch:282, iter:  93,700> l_pix: 1.8897e-03 
+25-07-21 21:04:23.439 - INFO: <epoch:282, iter:  93,800> l_pix: 1.8913e-03 
+25-07-21 21:04:34.282 - INFO: <epoch:282, iter:  93,900> l_pix: 6.0784e-03 
+25-07-21 21:04:45.088 - INFO: <epoch:283, iter:  94,000> l_pix: 1.9943e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.11it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.10it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.77it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.09it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.34it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.50it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.61it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.68it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.72it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.73it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.74it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.40it/s]
+25-07-21 21:04:57.357 - INFO: <epoch:283, iter:  94,100> l_pix: 2.1347e-03 
+25-07-21 21:05:08.192 - INFO: <epoch:283, iter:  94,200> l_pix: 2.2109e-03 
+25-07-21 21:05:18.996 - INFO: <epoch:284, iter:  94,300> l_pix: 2.0980e-03 
+25-07-21 21:05:29.834 - INFO: <epoch:284, iter:  94,400> l_pix: 4.9604e-03 
+25-07-21 21:05:40.673 - INFO: <epoch:284, iter:  94,500> l_pix: 3.5847e-03 
+25-07-21 21:05:51.570 - INFO: <epoch:285, iter:  94,600> l_pix: 2.3220e-03 
+25-07-21 21:06:02.476 - INFO: <epoch:285, iter:  94,700> l_pix: 2.5080e-03 
+25-07-21 21:06:13.321 - INFO: <epoch:285, iter:  94,800> l_pix: 7.0932e-03 
+25-07-21 21:06:24.157 - INFO: <epoch:285, iter:  94,900> l_pix: 2.1065e-03 
+25-07-21 21:06:34.964 - INFO: <epoch:286, iter:  95,000> l_pix: 2.5045e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.07it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.84it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.49it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.85it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 63.96it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.10it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.17it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.23it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.30it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.30it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.31it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.02it/s]
+25-07-21 21:06:47.347 - INFO: <epoch:286, iter:  95,100> l_pix: 5.6808e-03 
+25-07-21 21:06:58.208 - INFO: <epoch:286, iter:  95,200> l_pix: 2.1862e-03 
+25-07-21 21:07:09.032 - INFO: <epoch:287, iter:  95,300> l_pix: 1.8811e-03 
+25-07-21 21:07:19.891 - INFO: <epoch:287, iter:  95,400> l_pix: 1.4352e-03 
+25-07-21 21:07:30.750 - INFO: <epoch:287, iter:  95,500> l_pix: 2.0827e-03 
+25-07-21 21:07:41.566 - INFO: <epoch:288, iter:  95,600> l_pix: 1.9143e-03 
+25-07-21 21:07:52.431 - INFO: <epoch:288, iter:  95,700> l_pix: 2.2614e-03 
+25-07-21 21:08:03.354 - INFO: <epoch:288, iter:  95,800> l_pix: 5.0808e-03 
+25-07-21 21:08:14.288 - INFO: <epoch:288, iter:  95,900> l_pix: 2.2092e-03 
+25-07-21 21:08:25.099 - INFO: <epoch:289, iter:  96,000> l_pix: 2.1346e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.12it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 62.98it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.62it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 63.88it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.07it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.17it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.20it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.24it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.28it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.29it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.29it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.03it/s]
+25-07-21 21:08:37.394 - INFO: <epoch:289, iter:  96,100> l_pix: 2.2395e-03 
+25-07-21 21:08:48.239 - INFO: <epoch:289, iter:  96,200> l_pix: 1.8911e-03 
+25-07-21 21:08:59.048 - INFO: <epoch:290, iter:  96,300> l_pix: 1.7679e-03 
+25-07-21 21:09:09.893 - INFO: <epoch:290, iter:  96,400> l_pix: 2.7359e-03 
+25-07-21 21:09:20.742 - INFO: <epoch:290, iter:  96,500> l_pix: 2.2669e-03 
+25-07-21 21:09:31.557 - INFO: <epoch:291, iter:  96,600> l_pix: 1.8963e-03 
+25-07-21 21:09:42.408 - INFO: <epoch:291, iter:  96,700> l_pix: 2.6777e-03 
+25-07-21 21:09:53.263 - INFO: <epoch:291, iter:  96,800> l_pix: 1.8373e-03 
+25-07-21 21:10:04.110 - INFO: <epoch:291, iter:  96,900> l_pix: 1.6230e-03 
+25-07-21 21:10:14.923 - INFO: <epoch:292, iter:  97,000> l_pix: 2.2815e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.29it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.23it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.92it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.28it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.43it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.52it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.63it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.66it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.69it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.72it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.73it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.43it/s]
+25-07-21 21:10:27.272 - INFO: <epoch:292, iter:  97,100> l_pix: 1.6970e-03 
+25-07-21 21:10:38.191 - INFO: <epoch:292, iter:  97,200> l_pix: 2.2130e-03 
+25-07-21 21:10:49.048 - INFO: <epoch:293, iter:  97,300> l_pix: 1.9387e-03 
+25-07-21 21:10:59.893 - INFO: <epoch:293, iter:  97,400> l_pix: 2.3187e-03 
+25-07-21 21:11:10.729 - INFO: <epoch:293, iter:  97,500> l_pix: 2.0347e-03 
+25-07-21 21:11:21.530 - INFO: <epoch:294, iter:  97,600> l_pix: 2.4332e-03 
+25-07-21 21:11:32.369 - INFO: <epoch:294, iter:  97,700> l_pix: 3.6932e-03 
+25-07-21 21:11:43.208 - INFO: <epoch:294, iter:  97,800> l_pix: 5.6769e-03 
+25-07-21 21:11:54.045 - INFO: <epoch:294, iter:  97,900> l_pix: 2.0336e-03 
+25-07-21 21:12:04.844 - INFO: <epoch:295, iter:  98,000> l_pix: 4.0986e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.28it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.25it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.98it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.34it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.51it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.64it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.70it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.75it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.80it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.82it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.83it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.52it/s]
+25-07-21 21:12:17.138 - INFO: <epoch:295, iter:  98,100> l_pix: 3.8990e-03 
+25-07-21 21:12:27.979 - INFO: <epoch:295, iter:  98,200> l_pix: 3.0158e-03 
+25-07-21 21:12:38.795 - INFO: <epoch:296, iter:  98,300> l_pix: 2.4057e-03 
+25-07-21 21:12:49.631 - INFO: <epoch:296, iter:  98,400> l_pix: 6.9340e-03 
+25-07-21 21:13:00.555 - INFO: <epoch:296, iter:  98,500> l_pix: 2.4494e-03 
+25-07-21 21:13:11.357 - INFO: <epoch:297, iter:  98,600> l_pix: 1.4243e-03 
+25-07-21 21:13:22.234 - INFO: <epoch:297, iter:  98,700> l_pix: 2.4938e-03 
+25-07-21 21:13:33.127 - INFO: <epoch:297, iter:  98,800> l_pix: 4.2477e-03 
+25-07-21 21:13:44.028 - INFO: <epoch:297, iter:  98,900> l_pix: 6.2334e-03 
+25-07-21 21:13:54.889 - INFO: <epoch:298, iter:  99,000> l_pix: 5.2431e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   7%|▋         | 6/81 [00:00<00:01, 59.99it/s]sampling loop time step:  16%|█▌        | 13/81 [00:00<00:01, 62.86it/s]sampling loop time step:  25%|██▍       | 20/81 [00:00<00:00, 63.67it/s]sampling loop time step:  33%|███▎      | 27/81 [00:00<00:00, 64.08it/s]sampling loop time step:  42%|████▏     | 34/81 [00:00<00:00, 64.32it/s]sampling loop time step:  51%|█████     | 41/81 [00:00<00:00, 64.39it/s]sampling loop time step:  59%|█████▉    | 48/81 [00:00<00:00, 64.53it/s]sampling loop time step:  68%|██████▊   | 55/81 [00:00<00:00, 64.62it/s]sampling loop time step:  77%|███████▋  | 62/81 [00:00<00:00, 64.67it/s]sampling loop time step:  85%|████████▌ | 69/81 [00:01<00:00, 64.72it/s]sampling loop time step:  94%|█████████▍| 76/81 [00:01<00:00, 64.73it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.35it/s]
+25-07-21 21:14:07.244 - INFO: <epoch:298, iter:  99,100> l_pix: 1.8692e-03 
+25-07-21 21:14:18.111 - INFO: <epoch:298, iter:  99,200> l_pix: 2.1817e-03 
+25-07-21 21:14:28.934 - INFO: <epoch:299, iter:  99,300> l_pix: 2.6783e-03 
+25-07-21 21:14:39.792 - INFO: <epoch:299, iter:  99,400> l_pix: 2.4327e-03 
+25-07-21 21:14:50.652 - INFO: <epoch:299, iter:  99,500> l_pix: 1.9463e-03 
+25-07-21 21:15:01.477 - INFO: <epoch:300, iter:  99,600> l_pix: 3.5370e-03 
+25-07-21 21:15:12.336 - INFO: <epoch:300, iter:  99,700> l_pix: 1.8637e-03 
+25-07-21 21:15:23.282 - INFO: <epoch:300, iter:  99,800> l_pix: 2.3422e-03 
+25-07-21 21:15:34.111 - INFO: <epoch:300, iter:  99,900> l_pix: 2.6483e-03 
+25-07-21 21:15:44.976 - INFO: <epoch:301, iter: 100,000> l_pix: 1.7419e-03 
+sampling loop time step:   0%|          | 0/81 [00:00<?, ?it/s]sampling loop time step:   9%|▊         | 7/81 [00:00<00:01, 61.36it/s]sampling loop time step:  17%|█▋        | 14/81 [00:00<00:01, 63.26it/s]sampling loop time step:  26%|██▌       | 21/81 [00:00<00:00, 63.95it/s]sampling loop time step:  35%|███▍      | 28/81 [00:00<00:00, 64.33it/s]sampling loop time step:  43%|████▎     | 35/81 [00:00<00:00, 64.47it/s]sampling loop time step:  52%|█████▏    | 42/81 [00:00<00:00, 64.53it/s]sampling loop time step:  60%|██████    | 49/81 [00:00<00:00, 64.58it/s]sampling loop time step:  69%|██████▉   | 56/81 [00:00<00:00, 64.63it/s]sampling loop time step:  78%|███████▊  | 63/81 [00:00<00:00, 64.74it/s]sampling loop time step:  86%|████████▋ | 70/81 [00:01<00:00, 64.81it/s]sampling loop time step:  95%|█████████▌| 77/81 [00:01<00:00, 64.86it/s]sampling loop time step: 100%|██████████| 81/81 [00:01<00:00, 64.50it/s]
+25-07-21 21:15:46.398 - INFO: Saving models and training states.
+25-07-21 21:15:47.313 - INFO: Saved model in [experiments/hardi150_250721_181149/checkpoint/latest_gen.pth] ...
+25-07-21 21:15:47.324 - INFO: End of training.
